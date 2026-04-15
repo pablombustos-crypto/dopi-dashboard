@@ -49,10 +49,7 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
 .sec-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .btn-add{display:flex;align-items:center;gap:6px;background:var(--rosa);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s}
 .btn-add:hover{opacity:.85}
-.esc-row{display:flex;gap:8px;margin-bottom:16px}
-.esc-btn{flex:1;padding:8px;border:1px solid var(--border);border-radius:9px;background:var(--white);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;text-align:center}
-.esc-btn:hover{border-color:var(--rosa);color:var(--rosa)}
-.esc-btn.active{background:var(--rosa);border-color:var(--rosa);color:#fff}
+
 .tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
 .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .cat-hd{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;justify-content:space-between}
@@ -179,13 +176,8 @@ td.sm{font-size:11px;color:var(--muted)}
 </div>
 <div class="panel" id="panel-capex">
   <div class="sec-hd">
-    <span class="sec-title">Escenario</span>
-    <div class="esc-row" style="margin-bottom:0;flex:1;min-width:200px;max-width:340px">
-      <button class="esc-btn" onclick="setEsc('cons',this)">Conservador</button>
-      <button class="esc-btn active" onclick="setEsc('base',this)">Base ★</button>
-      <button class="esc-btn" onclick="setEsc('opt',this)">Optimista</button>
-    </div>
-    <button class="btn-add" onclick="openCapex()">+ Añadir</button>
+    <span class="sec-title">CAPEX — Presupuesto & pagos</span>
+    <button class="btn-add" onclick="openCapex()">+ Añadir item</button>
   </div>
   <div id="capex-tables"></div>
 </div>
@@ -222,10 +214,26 @@ td.sm{font-size:11px;color:var(--muted)}
     <option value="CAPITAL OPERATIVO INICIAL">Capital Operativo</option>
   </select></div>
   <div class="f-grid">
-    <div class="f-row"><label>Conservador (€)</label><input type="number" id="mc-cons" placeholder="0" min="0" step="0.01"></div>
-    <div class="f-row"><label>Base (€)</label><input type="number" id="mc-base" placeholder="0" min="0" step="0.01"></div>
-    <div class="f-row"><label>Optimista (€)</label><input type="number" id="mc-opt" placeholder="0" min="0" step="0.01"></div>
+    <div class="f-row"><label>Presupuesto (€)</label><input type="number" id="mc-presupuesto" placeholder="0" min="0" step="0.01"></div>
     <div class="f-row"><label>Pagado real (€)</label><input type="number" id="mc-pagado" placeholder="0" min="0" step="0.01"></div>
+  </div>
+  <div class="f-row">
+    <label>Comprobante</label>
+    <div id="mc-upload-area" onclick="triggerUpload()" style="border:1.5px dashed var(--border);border-radius:9px;padding:14px 16px;cursor:pointer;text-align:center;transition:all .15s;background:var(--bg)" onmouseover="this.style.borderColor='var(--rosa)';this.style.background='var(--rosa-soft)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--bg)'">
+      <div id="mc-upload-label" style="font-size:13px;color:var(--muted)">📎 Toca para subir foto, PDF o imagen</div>
+      <input type="file" id="mc-file-input" accept="image/*,application/pdf" style="display:none" onchange="handleUpload(this)">
+    </div>
+    <input type="hidden" id="mc-comprobante">
+    <div id="mc-upload-preview" style="display:none;margin-top:8px;padding:8px 12px;background:var(--verde-soft);border:1px solid #bbf7d0;border-radius:8px;font-size:12px;display:flex;align-items:center;gap:8px;justify-content:space-between">
+      <span id="mc-upload-name" style="color:var(--verde);font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button type="button" onclick="clearUpload()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;flex-shrink:0">✕</button>
+    </div>
+    <div id="mc-upload-progress" style="display:none;margin-top:8px">
+      <div style="background:var(--border2);border-radius:99px;height:4px;overflow:hidden">
+        <div id="mc-progress-bar" style="height:100%;background:var(--rosa);width:0%;transition:width .3s;border-radius:99px"></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center">Subiendo...</div>
+    </div>
   </div>
   <div class="f-row"><label>Estado</label><select id="mc-estado">
     <option value="PENDIENTE">Pendiente</option><option value="PAGADO">Pagado</option>
@@ -275,29 +283,29 @@ const CAT_COLOR={'COSTES LEGALES & LOCAL':'#e8195a','REFORMA & INTERIORISMO':'#f
 const PCAT_COLOR={Legal:'#e8195a',Local:'#f97316',Equipamiento:'#0369a1',Reforma:'#d97706',Branding:'#16a34a',Operativo:'#2563eb','Capital social ⚠':'#7c3aed',Otros:'#6b7280'};
 
 let capexItems=[
-  {id:1,cat:'COSTES LEGALES & LOCAL',concepto:'Inscripción nombre mercantil (SL)',cons:35,base:35,opt:35,pagado:35,estado:'PAGADO',nota:'Gestoría Tomás y Nogueras',fecha:'18/03/26 · Pablo'},
-  {id:2,cat:'COSTES LEGALES & LOCAL',concepto:'Fianza (2 meses renta)',cons:2000,base:2000,opt:2000,pagado:2000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',fecha:'27/03/26 · Estefanía'},
-  {id:3,cat:'COSTES LEGALES & LOCAL',concepto:'Garantía adicional (3 meses)',cons:3000,base:3000,opt:3000,pagado:3000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',fecha:'27/03/26 · Estefanía'},
-  {id:4,cat:'COSTES LEGALES & LOCAL',concepto:'Comisión agencia (Conde Abogados)',cons:1210,base:1210,opt:1210,pagado:1210,estado:'PAGADO',nota:'Confirmado – ya pagado',fecha:'27/03/26 · Estefanía'},
-  {id:5,cat:'COSTES LEGALES & LOCAL',concepto:'1er mes de alquiler',cons:1000,base:1000,opt:1000,pagado:1020,estado:'PAGADO',nota:'Incluido en pago inicial €6.020',fecha:'27/03/26 · Estefanía'},
-  {id:6,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia sanitaria (alimentos)',cons:null,base:null,opt:null,pagado:null,estado:'PENDIENTE',nota:'—',fecha:'—'},
-  {id:7,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia apertura / actividad',cons:null,base:400,opt:600,pagado:null,estado:'PENDIENTE',nota:'Estimado – Ayuntamiento Granada',fecha:'—'},
-  {id:8,cat:'REFORMA & INTERIORISMO',concepto:'Informe arquitecta (Ruth Márquez)',cons:null,base:null,opt:null,pagado:null,estado:'EN CURSO',nota:'Arquitecta colegiada contratada',fecha:'667573598'},
-  {id:9,cat:'REFORMA & INTERIORISMO',concepto:'Reforma / acondicionamiento',cons:1200,base:1200,opt:1200,pagado:600,estado:'PARCIAL',nota:'Presupuesto cerrado · €600 pagado (50%)',fecha:'14/04/26 · Estefanía'},
-  {id:10,cat:'REFORMA & INTERIORISMO',concepto:'Señalética + rotulación exterior',cons:null,base:null,opt:null,pagado:null,estado:'PENDIENTE',nota:'—',fecha:'—'},
-  {id:11,cat:'REFORMA & INTERIORISMO',concepto:'Decoración / mobiliario',cons:500,base:1500,opt:3000,pagado:null,estado:'PENDIENTE',nota:'Concepto visual marca',fecha:'—'},
-  {id:12,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Horno convección (precio real IVA inc.)',cons:1175,base:1175,opt:1175,pagado:1175,estado:'PAGADO',nota:'1 ud. confirmada · IVA incluido',fecha:'pendiente fecha'},
-  {id:13,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Congelador comercial ×2 (precio real IVA inc.)',cons:2120,base:2120,opt:2120,pagado:2120,estado:'PAGADO',nota:'2 uds × €1.060 IVA incluido',fecha:'pendiente fecha'},
-  {id:14,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Mostrador / muebles',cons:1200,base:1800,opt:2500,pagado:null,estado:'PENDIENTE',nota:'Estimado — zona despacho + muebles',fecha:'—'},
-  {id:15,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cafetera (precio real IVA inc.)',cons:1944,base:1944,opt:1944,pagado:1944,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha'},
-  {id:16,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Lavamanos (precio real IVA inc.)',cons:150,base:150,opt:150,pagado:150,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha'},
-  {id:17,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Molinillo café (precio real IVA inc.)',cons:336,base:336,opt:336,pagado:336,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha'},
-  {id:18,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cristales / vitrinas',cons:500,base:1000,opt:1800,pagado:null,estado:'PENDIENTE',nota:'Estimado — expositores y vitrinas producto',fecha:'—'},
-  {id:19,cat:'BRANDING & MARKETING INICIAL',concepto:'Diseño de marca (Luis Escobar)',cons:604,base:604,opt:604,pagado:null,estado:'PENDIENTE',nota:'Manual de marca incluido',fecha:'—'},
-  {id:20,cat:'BRANDING & MARKETING INICIAL',concepto:'Packaging producción inicial',cons:600,base:1200,opt:2500,pagado:null,estado:'PENDIENTE',nota:'Cajas, sleeves 1ª tirada',fecha:'—'},
-  {id:21,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Aporte inicial cuenta empresa (BBVA)',cons:3000,base:3000,opt:3000,pagado:3000,estado:'DEPOSITADO',nota:'Capital social – NO es gasto',fecha:'25/03/26 · Estefanía'},
-  {id:22,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Inventario inicial (masa congelada+dips)',cons:600,base:1200,opt:2000,pagado:null,estado:'PENDIENTE',nota:'Stock 2–3 semanas',fecha:'—'},
-  {id:23,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Fondo de maniobra (caja)',cons:500,base:700,opt:1000,pagado:null,estado:'PENDIENTE',nota:'Efectivo disponible',fecha:'—'},
+  {id:1,cat:'COSTES LEGALES & LOCAL',concepto:'Inscripción nombre mercantil (SL)',presupuesto:35,pagado:35,estado:'PAGADO',nota:'Gestoría Tomás y Nogueras',fecha:'18/03/26 · Pablo',comprobante:''},
+  {id:2,cat:'COSTES LEGALES & LOCAL',concepto:'Fianza (2 meses renta)',presupuesto:2000,pagado:2000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',fecha:'27/03/26 · Estefanía',comprobante:''},
+  {id:3,cat:'COSTES LEGALES & LOCAL',concepto:'Garantía adicional (3 meses)',presupuesto:3000,pagado:3000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',fecha:'27/03/26 · Estefanía',comprobante:''},
+  {id:4,cat:'COSTES LEGALES & LOCAL',concepto:'Comisión agencia (Conde Abogados)',presupuesto:1210,pagado:1210,estado:'PAGADO',nota:'Confirmado – ya pagado',fecha:'27/03/26 · Estefanía',comprobante:''},
+  {id:5,cat:'COSTES LEGALES & LOCAL',concepto:'1er mes de alquiler',presupuesto:1000,pagado:1020,estado:'PAGADO',nota:'Incluido en pago inicial €6.020',fecha:'27/03/26 · Estefanía',comprobante:''},
+  {id:6,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia sanitaria (alimentos)',presupuesto:null,pagado:null,estado:'PENDIENTE',nota:'—',fecha:'—',comprobante:''},
+  {id:7,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia apertura / actividad',presupuesto:400,pagado:null,estado:'PENDIENTE',nota:'Estimado – Ayuntamiento Granada',fecha:'—',comprobante:''},
+  {id:8,cat:'REFORMA & INTERIORISMO',concepto:'Informe arquitecta (Ruth Márquez)',presupuesto:null,pagado:null,estado:'EN CURSO',nota:'Arquitecta colegiada contratada',fecha:'667573598',comprobante:''},
+  {id:9,cat:'REFORMA & INTERIORISMO',concepto:'Reforma / acondicionamiento',presupuesto:1200,pagado:600,estado:'PARCIAL',nota:'Presupuesto cerrado · €600 pagado (50%)',fecha:'14/04/26 · Estefanía',comprobante:''},
+  {id:10,cat:'REFORMA & INTERIORISMO',concepto:'Señalética + rotulación exterior',presupuesto:null,pagado:null,estado:'PENDIENTE',nota:'—',fecha:'—',comprobante:''},
+  {id:11,cat:'REFORMA & INTERIORISMO',concepto:'Decoración / mobiliario',presupuesto:1500,pagado:null,estado:'PENDIENTE',nota:'Concepto visual marca',fecha:'—',comprobante:''},
+  {id:12,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Horno convección (precio real IVA inc.)',presupuesto:1175,pagado:1175,estado:'PAGADO',nota:'1 ud. confirmada · IVA incluido',fecha:'pendiente fecha',comprobante:''},
+  {id:13,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Congelador comercial ×2 (precio real IVA inc.)',presupuesto:2120,pagado:2120,estado:'PAGADO',nota:'2 uds × €1.060 IVA incluido',fecha:'pendiente fecha',comprobante:''},
+  {id:14,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Mostrador / muebles',presupuesto:1800,pagado:null,estado:'PENDIENTE',nota:'Estimado — zona despacho + muebles',fecha:'—',comprobante:''},
+  {id:15,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cafetera (precio real IVA inc.)',presupuesto:1944,pagado:1944,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha',comprobante:''},
+  {id:16,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Lavamanos (precio real IVA inc.)',presupuesto:150,pagado:150,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha',comprobante:''},
+  {id:17,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Molinillo café (precio real IVA inc.)',presupuesto:336,pagado:336,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha',comprobante:''},
+  {id:18,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cristales / vitrinas',presupuesto:1000,pagado:null,estado:'PENDIENTE',nota:'Estimado — expositores y vitrinas producto',fecha:'—',comprobante:''},
+  {id:19,cat:'BRANDING & MARKETING INICIAL',concepto:'Diseño de marca (Luis Escobar)',presupuesto:604,pagado:null,estado:'PENDIENTE',nota:'Manual de marca incluido',fecha:'—',comprobante:''},
+  {id:20,cat:'BRANDING & MARKETING INICIAL',concepto:'Packaging producción inicial',presupuesto:1200,pagado:null,estado:'PENDIENTE',nota:'Cajas, sleeves 1ª tirada',fecha:'—',comprobante:''},
+  {id:21,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Aporte inicial cuenta empresa (BBVA)',presupuesto:3000,pagado:3000,estado:'DEPOSITADO',nota:'Capital social – NO es gasto',fecha:'25/03/26 · Estefanía',comprobante:''},
+  {id:22,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Inventario inicial (masa congelada+dips)',presupuesto:1200,pagado:null,estado:'PENDIENTE',nota:'Stock 2–3 semanas',fecha:'—',comprobante:''},
+  {id:23,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Fondo de maniobra (caja)',presupuesto:700,pagado:null,estado:'PENDIENTE',nota:'Efectivo disponible',fecha:'—',comprobante:''},
 ];
 let pagosItems=[
   {id:1,fecha:'18/03/2026',concepto:'Inscripción nombre mercantil (SL)',proveedor:'Gestoría Tomás y Nogueras',responsable:'Pablo',metodo:'Tarjeta crédito',importe:35,categoria:'Legal'},
@@ -324,7 +332,7 @@ let tareasItems=[
   {id:11,titulo:'Inventario inicial masa congelada',desc:'Stock de 2-3 semanas para apertura',prioridad:'media',responsable:'Pablo',done:false},
   {id:12,titulo:'Ficha técnica APPCC',desc:'Documento de autocontrol sanitario obligatorio',prioridad:'alta',responsable:'Ambos',done:false},
 ];
-let currentEsc='base',nextCapexId=40,nextPagoId=20,nextTareaId=20,editCapexId=null,editPagoId=null,editTareaId=null;
+let nextCapexId=40,nextPagoId=20,nextTareaId=20,editCapexId=null,editPagoId=null,editTareaId=null;
 let donutChart,barChart,lineChart;
 const STORE_KEY='dopi-data-v1';
 async function loadData(){try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return null;}
@@ -332,7 +340,7 @@ async function saveData(){try{await window.storage.set(STORE_KEY,JSON.stringify(
 const fmt=v=>(v==null||v===''||v==='—')?'—':'€'+Number(v).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
 const statCls=s=>({'PAGADO':'s-pagado','PENDIENTE':'s-pendiente','PARCIAL':'s-parcial','EN CURSO':'s-curso','DEPOSITADO':'s-depositado'}[s]||'s-pendiente');
 function updateKPIs(){
-  const total=capexItems.reduce((s,i)=>s+(i[currentEsc]||0),0);
+  const total=capexItems.reduce((s,i)=>s+(i.presupuesto||0),0);
   const pagado=capexItems.reduce((s,i)=>s+(i.pagado||0),0);
   const pct=total>0?Math.round((pagado/total)*100):0;
   const realPaid=pagosItems.filter(p=>p.categoria!=='Capital social ⚠').reduce((s,p)=>s+(p.importe||0),0);
@@ -345,12 +353,12 @@ function updateKPIs(){
   document.getElementById('p-bar').style.width=Math.min(pct,100)+'%';
 }
 function buildCharts(){
-  const donutData=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.base||0),0));
+  const donutData=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.presupuesto||0),0));
   const dCtx=document.getElementById('chart-donut').getContext('2d');
   if(donutChart)donutChart.destroy();
   donutChart=new Chart(dCtx,{type:'doughnut',data:{labels:CATS.map(c=>c.split(' ').slice(0,2).join(' ')),datasets:[{data:donutData,backgroundColor:CATS.map(c=>CAT_COLOR[c]),borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'right',labels:{font:{size:10,family:'Plus Jakarta Sans'},padding:8,usePointStyle:true,pointStyleWidth:8,boxHeight:8}},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}}}});
   const bPaid=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.pagado||0),0));
-  const bPend=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.base||0)-(i.pagado||0),0));
+  const bPend=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.presupuesto||0)-(i.pagado||0),0));
   const bCtx=document.getElementById('chart-bar').getContext('2d');
   if(barChart)barChart.destroy();
   barChart=new Chart(bCtx,{type:'bar',data:{labels:CATS.map(c=>c.split('&')[0].trim().split(' ').slice(0,2).join(' ')),datasets:[{label:'Pagado',data:bPaid,backgroundColor:'#16a34a',borderRadius:4},{label:'Pendiente',data:bPend,backgroundColor:'#fed7aa',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10,family:'Plus Jakarta Sans'},padding:8,usePointStyle:true,pointStyleWidth:8,boxHeight:8}}},scales:{x:{stacked:true,ticks:{font:{size:9},maxRotation:30}},y:{stacked:true,ticks:{font:{size:9,family:'JetBrains Mono'},callback:v=>'€'+v.toLocaleString('es-ES')}}}}});
@@ -384,17 +392,19 @@ function renderCapex(){
   const cont=document.getElementById('capex-tables');cont.innerHTML='';
   CATS.forEach(cat=>{
     const items=capexItems.filter(i=>i.cat===cat);if(!items.length)return;
-    const catTotal=items.reduce((s,i)=>s+(i[currentEsc]||0),0);
+    const catTotal=items.reduce((s,i)=>s+(i.presupuesto||0),0);
     const catPagado=items.reduce((s,i)=>s+(i.pagado||0),0);
     const color=CAT_COLOR[cat];
 
     /* ── Desktop table ── */
     const desktopRows=items.map(item=>`<tr>
       <td class="bold"><span class="dot" style="background:${color};margin-right:7px"></span>${item.concepto}</td>
-      <td class="r">${fmt(item.cons)}</td><td class="r">${fmt(item.base)}</td><td class="r">${fmt(item.opt)}</td>
+      <td class="r">${fmt(item.presupuesto)}</td>
       <td class="r" style="color:${item.pagado?'#16a34a':'var(--faint)'}">${fmt(item.pagado)}</td>
+      <td class="r" style="color:${item.presupuesto&&item.pagado?'#f97316':'var(--faint)'}">${fmt((item.presupuesto||0)-(item.pagado||0)>0?(item.presupuesto||0)-(item.pagado||0):null)}</td>
       <td>${statusSelect(item)}</td>
       <td class="sm">${item.nota}</td>
+      <td class="sm">${item.comprobante?`<a href="${item.comprobante}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(--azul);text-decoration:none;font-size:11px;font-weight:600;padding:3px 8px;background:var(--azul-soft);border-radius:6px">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:'<span style="color:var(--faint);font-size:11px">—</span>'}</td>
       <td><div class="acts"><button class="btn-ic" onclick="editCapexItem(${item.id})">✏</button><button class="btn-ic del" onclick="deleteCapex(${item.id})">✕</button></div></td>
     </tr>`).join('');
 
@@ -405,14 +415,15 @@ function renderCapex(){
         <div class="acts" style="flex-shrink:0"><button class="btn-ic" onclick="editCapexItem(${item.id})">✏</button><button class="btn-ic del" onclick="deleteCapex(${item.id})">✕</button></div>
       </div>
       <div class="item-card-amounts">
-        <div class="item-card-amount"><div class="item-card-amount-label">Cons.</div><div class="item-card-amount-val">${fmt(item.cons)}</div></div>
-        <div class="item-card-amount"><div class="item-card-amount-label">Base ★</div><div class="item-card-amount-val">${fmt(item.base)}</div></div>
+        <div class="item-card-amount"><div class="item-card-amount-label">Presupuesto</div><div class="item-card-amount-val">${fmt(item.presupuesto)}</div></div>
         <div class="item-card-amount"><div class="item-card-amount-label">Pagado</div><div class="item-card-amount-val pagado">${fmt(item.pagado)}</div></div>
+        <div class="item-card-amount"><div class="item-card-amount-label">Pendiente</div><div class="item-card-amount-val" style="color:${(item.presupuesto||0)-(item.pagado||0)>0?'var(--naranja)':'var(--faint)'}">${(item.presupuesto&&(item.presupuesto-( item.pagado||0))>0)?fmt(item.presupuesto-(item.pagado||0)):'—'}</div></div>
       </div>
       <div class="item-card-bottom">
         ${statusSelect(item)}
-        <span class="item-card-nota">${item.nota}</span>
+        ${item.comprobante?`<a href="${item.comprobante}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(--azul);font-size:12px;font-weight:600;text-decoration:none;flex-shrink:0;padding:4px 10px;background:var(--azul-soft);border-radius:7px">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver comprobante</a>`:'<span style="color:var(--faint);font-size:11px">Sin comprobante</span>'}
       </div>
+      ${item.nota&&item.nota!=='—'?`<div style="margin-top:8px;font-size:11px;color:var(--muted);padding-top:8px;border-top:1px solid var(--border2)">${item.nota}</div>`:''}
     </div>`).join('');
 
     cont.innerHTML+=`<div class="tbl-wrap">
@@ -421,8 +432,9 @@ function renderCapex(){
         <span class="cat-totals">${fmt(catTotal)} · ${fmt(catPagado)} pagado</span>
       </div>
       <div class="desktop-table"><div class="tbl-scroll"><table><thead><tr>
-        <th>Concepto</th><th class="r">Cons.</th><th class="r">Base ★</th><th class="r">Opt.</th>
-        <th class="r">Pagado</th><th>Estado</th><th>Nota</th><th style="width:70px"></th>
+        <th>Concepto</th><th class="r">Presupuesto</th>
+        <th class="r">Pagado</th><th class="r">Pendiente</th>
+        <th>Estado</th><th>Nota</th><th>Comprobante</th><th style="width:70px"></th>
       </tr></thead><tbody>${desktopRows}</tbody></table></div></div>
       <div class="mobile-cards" style="padding:12px">${mobileCards}</div>
     </div>`;
@@ -467,15 +479,15 @@ function renderTareas(){
   </div>`).join('')+`<button class="btn-tarea-add" onclick="openTarea()">+ Nueva tarea</button>`;
 }
 function toggleTarea(id){const t=tareasItems.find(i=>i.id===id);if(t){t.done=!t.done;saveData();renderTareas();}}
-function setEsc(esc,btn){currentEsc=esc;document.querySelectorAll('.esc-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCapex();}
+
 function switchTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById('panel-'+tab).classList.add('active');
   if(tab==='pagos')renderPagos();if(tab==='tareas')renderTareas();
 }
-function openCapex(){editCapexId=null;document.getElementById('mc-title').textContent='Nuevo';['mc-concepto','mc-nota','mc-fecha'].forEach(id=>document.getElementById(id).value='');['mc-cons','mc-base','mc-opt','mc-pagado'].forEach(id=>document.getElementById(id).value='');document.getElementById('mc-cat').selectedIndex=0;document.getElementById('mc-estado').selectedIndex=0;document.getElementById('modal-capex').classList.add('open');}
-function editCapexItem(id){const item=capexItems.find(i=>i.id===id);if(!item)return;editCapexId=id;document.getElementById('mc-title').textContent='Editar';document.getElementById('mc-concepto').value=item.concepto;document.getElementById('mc-cat').value=item.cat;document.getElementById('mc-cons').value=item.cons||'';document.getElementById('mc-base').value=item.base||'';document.getElementById('mc-opt').value=item.opt||'';document.getElementById('mc-pagado').value=item.pagado||'';document.getElementById('mc-estado').value=item.estado;document.getElementById('mc-nota').value=item.nota==='—'?'':item.nota;document.getElementById('mc-fecha').value=item.fecha==='—'?'':item.fecha;document.getElementById('modal-capex').classList.add('open');}
-function saveCapex(){const concepto=document.getElementById('mc-concepto').value.trim();if(!concepto){alert('Escribe el concepto');return;}const item={id:editCapexId||nextCapexId++,cat:document.getElementById('mc-cat').value,concepto,cons:parseFloat(document.getElementById('mc-cons').value)||null,base:parseFloat(document.getElementById('mc-base').value)||null,opt:parseFloat(document.getElementById('mc-opt').value)||null,pagado:parseFloat(document.getElementById('mc-pagado').value)||null,estado:document.getElementById('mc-estado').value,nota:document.getElementById('mc-nota').value||'—',fecha:document.getElementById('mc-fecha').value||'—'};if(editCapexId){const idx=capexItems.findIndex(i=>i.id===editCapexId);capexItems[idx]=item;}else capexItems.push(item);closeModal('capex');saveData();renderCapex();}
+function openCapex(){editCapexId=null;document.getElementById('mc-title').textContent='Nuevo';['mc-concepto','mc-nota','mc-fecha'].forEach(id=>document.getElementById(id).value='');['mc-presupuesto','mc-pagado'].forEach(id=>document.getElementById(id).value='');document.getElementById('mc-cat').selectedIndex=0;document.getElementById('mc-estado').selectedIndex=0;clearUpload();document.getElementById('modal-capex').classList.add('open');}
+function editCapexItem(id){const item=capexItems.find(i=>i.id===id);if(!item)return;editCapexId=id;document.getElementById('mc-title').textContent='Editar';document.getElementById('mc-concepto').value=item.concepto;document.getElementById('mc-cat').value=item.cat;document.getElementById('mc-presupuesto').value=item.presupuesto||'';document.getElementById('mc-pagado').value=item.pagado||'';document.getElementById('mc-estado').value=item.estado;document.getElementById('mc-nota').value=item.nota==='—'?'':item.nota;document.getElementById('mc-fecha').value=item.fecha==='—'?'':item.fecha;resetUploadWidget(item.comprobante||'');document.getElementById('modal-capex').classList.add('open');}
+function saveCapex(){const concepto=document.getElementById('mc-concepto').value.trim();if(!concepto){alert('Escribe el concepto');return;}const item={id:editCapexId||nextCapexId++,cat:document.getElementById('mc-cat').value,concepto,presupuesto:parseFloat(document.getElementById('mc-presupuesto').value)||null,pagado:parseFloat(document.getElementById('mc-pagado').value)||null,estado:document.getElementById('mc-estado').value,nota:document.getElementById('mc-nota').value||'—',fecha:document.getElementById('mc-fecha').value||'—',comprobante:document.getElementById('mc-comprobante').value.trim()||''};if(editCapexId){const idx=capexItems.findIndex(i=>i.id===editCapexId);capexItems[idx]=item;}else capexItems.push(item);closeModal('capex');saveData();renderCapex();}
 function deleteCapex(id){if(!confirm('¿Eliminar?'))return;capexItems=capexItems.filter(i=>i.id!==id);saveData();renderCapex();}
 function openPago(){editPagoId=null;document.getElementById('mp-title').textContent='Nuevo';['mp-fecha','mp-concepto','mp-proveedor'].forEach(id=>document.getElementById(id).value='');document.getElementById('mp-importe').value='';document.getElementById('mp-resp').selectedIndex=0;document.getElementById('mp-metodo').selectedIndex=0;document.getElementById('mp-cat').selectedIndex=0;document.getElementById('modal-pago').classList.add('open');}
 function editPagoItem(id){const p=pagosItems.find(i=>i.id===id);if(!p)return;editPagoId=id;document.getElementById('mp-title').textContent='Editar';document.getElementById('mp-concepto').value=p.concepto;document.getElementById('mp-proveedor').value=p.proveedor==='—'?'':p.proveedor;document.getElementById('mp-importe').value=p.importe;document.getElementById('mp-resp').value=p.responsable;document.getElementById('mp-metodo').value=p.metodo;document.getElementById('mp-cat').value=p.categoria;document.getElementById('modal-pago').classList.add('open');}
@@ -485,6 +497,91 @@ function openTarea(){editTareaId=null;['mt-titulo','mt-desc'].forEach(id=>docume
 function editTareaItem(id){const t=tareasItems.find(i=>i.id===id);if(!t)return;editTareaId=id;document.getElementById('mt-titulo').value=t.titulo;document.getElementById('mt-desc').value=t.desc||'';document.getElementById('mt-pri').value=t.prioridad;document.getElementById('mt-resp').value=t.responsable;document.getElementById('modal-tarea').classList.add('open');}
 function saveTarea(){const titulo=document.getElementById('mt-titulo').value.trim();if(!titulo){alert('Escribe el título');return;}const tarea={id:editTareaId||nextTareaId++,titulo,desc:document.getElementById('mt-desc').value,prioridad:document.getElementById('mt-pri').value,responsable:document.getElementById('mt-resp').value,done:editTareaId?(tareasItems.find(t=>t.id===editTareaId)||{}).done||false:false};if(editTareaId){const idx=tareasItems.findIndex(t=>t.id===editTareaId);tareasItems[idx]=tarea;}else tareasItems.push(tarea);closeModal('tarea');saveData();renderTareas();}
 function deleteTarea(id){if(!confirm('¿Eliminar?'))return;tareasItems=tareasItems.filter(t=>t.id!==id);saveData();renderTareas();}
+
+// ══════════════════════════════════════
+// CLOUDINARY UPLOAD
+// ══════════════════════════════════════
+const CLOUD_NAME = 'dwdyqxmkk';
+const UPLOAD_PRESET = 'dopi_comprobantes';
+
+function triggerUpload(){
+  document.getElementById('mc-file-input').click();
+}
+
+async function handleUpload(input){
+  const file = input.files[0];
+  if(!file) return;
+  
+  // Show progress
+  document.getElementById('mc-upload-progress').style.display='block';
+  document.getElementById('mc-upload-preview').style.display='none';
+  document.getElementById('mc-upload-label').textContent='Subiendo...';
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', UPLOAD_PRESET);
+  formData.append('folder', 'dopi');
+  
+  // Animate progress bar
+  let prog = 0;
+  const progBar = document.getElementById('mc-progress-bar');
+  const progInterval = setInterval(()=>{ prog=Math.min(prog+8,85); progBar.style.width=prog+'%'; }, 200);
+  
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await res.json();
+    clearInterval(progInterval);
+    
+    if(data.secure_url){
+      progBar.style.width='100%';
+      setTimeout(()=>{
+        document.getElementById('mc-upload-progress').style.display='none';
+        document.getElementById('mc-comprobante').value = data.secure_url;
+        const name = file.name.length>40 ? file.name.substring(0,37)+'...' : file.name;
+        document.getElementById('mc-upload-name').textContent = '✓ '+name;
+        const preview = document.getElementById('mc-upload-preview');
+        preview.style.display='flex';
+        document.getElementById('mc-upload-label').textContent='📎 Toca para cambiar archivo';
+        document.getElementById('mc-upload-area').style.borderColor='var(--verde)';
+      }, 400);
+    } else {
+      throw new Error(data.error?.message || 'Error al subir');
+    }
+  } catch(e) {
+    clearInterval(progInterval);
+    document.getElementById('mc-upload-progress').style.display='none';
+    document.getElementById('mc-upload-label').textContent='📎 Toca para subir foto, PDF o imagen';
+    // Fallback: show error but allow manual URL
+    alert('Error al subir: '+e.message+'\n\nAsegúrate de crear el upload preset "dopi_comprobantes" en tu cuenta Cloudinary (Settings → Upload → Add upload preset → Unsigned).');
+  }
+  input.value='';
+}
+
+function clearUpload(){
+  document.getElementById('mc-comprobante').value='';
+  document.getElementById('mc-upload-preview').style.display='none';
+  document.getElementById('mc-upload-label').textContent='📎 Toca para subir foto, PDF o imagen';
+  document.getElementById('mc-upload-area').style.borderColor='var(--border)';
+  document.getElementById('mc-upload-area').style.background='var(--bg)';
+}
+
+function resetUploadWidget(url){
+  // Called when editing an existing item
+  if(url){
+    document.getElementById('mc-comprobante').value=url;
+    const shortUrl = url.split('/').pop().split('?')[0];
+    const name = shortUrl.length>40 ? shortUrl.substring(0,37)+'...' : shortUrl;
+    document.getElementById('mc-upload-name').textContent='✓ '+name;
+    document.getElementById('mc-upload-preview').style.display='flex';
+    document.getElementById('mc-upload-label').textContent='📎 Toca para cambiar archivo';
+    document.getElementById('mc-upload-area').style.borderColor='var(--verde)';
+  } else {
+    clearUpload();
+  }
+}
 function closeModal(type){document.getElementById('modal-'+type).classList.remove('open');}
 document.querySelectorAll('.modal-bg').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 document.getElementById('today').textContent=new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
