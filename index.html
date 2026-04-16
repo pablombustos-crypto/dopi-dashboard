@@ -115,8 +115,22 @@ td.sm{font-size:11px;color:var(--muted)}
 .pri-alta{background:#fee2e2;color:#b91c1c}
 .pri-media{background:var(--amarillo-soft);color:#a16207}
 .pri-baja{background:var(--azul-soft);color:#1d4ed8}
+.est-pendiente{background:var(--naranja-soft);color:#c2410c}
+.est-en_proceso{background:var(--azul-soft);color:#1d4ed8}
+.est-completado{background:var(--verde-soft);color:#15803d}
 .btn-tarea-add{width:100%;padding:11px;border:1.5px dashed var(--border);border-radius:12px;background:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
 .btn-tarea-add:hover{border-color:var(--rosa);color:var(--rosa);background:var(--rosa-soft)}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-pill{padding:6px 13px;border-radius:99px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.filter-pill:hover{border-color:var(--rosa);color:var(--rosa)}
+.filter-pill.active{background:var(--text);border-color:var(--text);color:#fff}
+.filter-pill.f-alta.active{background:#b91c1c;border-color:#b91c1c;color:#fff}
+.filter-pill.f-media.active{background:#a16207;border-color:#a16207;color:#fff}
+.filter-pill.f-baja.active{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+.sort-select{padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:var(--white);color:var(--mid);font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;outline:none;appearance:none;-webkit-appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8a85' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.tarea-fecha{font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace}
+.tarea-fecha.urgente{color:#b91c1c;font-weight:600}
+.tarea-fecha.pronto{color:#d97706;font-weight:600}
 .panel{display:none}
 .panel.active{display:block}
 .status-sel{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;text-transform:uppercase;appearance:none;-webkit-appearance:none}
@@ -192,11 +206,25 @@ td.sm{font-size:11px;color:var(--muted)}
 </div>
 <div class="panel" id="panel-tareas">
   <div class="sec-hd">
-    <span class="sec-title">Tareas pendientes</span>
+    <span class="sec-title">Tareas</span>
     <div style="display:flex;gap:8px;align-items:center">
       <span id="tareas-count" style="font-size:12px;color:var(--muted)"></span>
       <button class="btn-add" onclick="openTarea()">+ Añadir</button>
     </div>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-pill active" onclick="setFilter('all',this)">Todas</button>
+    <button class="filter-pill f-alta" onclick="setFilter('alta',this)">🔴 Alta</button>
+    <button class="filter-pill f-media" onclick="setFilter('media',this)">🟡 Media</button>
+    <button class="filter-pill f-baja" onclick="setFilter('baja',this)">🔵 Baja</button>
+    <button class="filter-pill" onclick="setFilter('pendiente',this)">Pendientes</button>
+    <button class="filter-pill" onclick="setFilter('en_proceso',this)">En proceso</button>
+    <button class="filter-pill" onclick="setFilter('completado',this)">Completadas</button>
+    <select class="sort-select" id="tareas-sort" onchange="renderTareas()">
+      <option value="estado">↕ Por estado</option>
+      <option value="fecha">📅 Fecha límite</option>
+      <option value="prioridad">🔴 Prioridad</option>
+    </select>
   </div>
   <div class="tareas-list" id="tareas-list"></div>
 </div>
@@ -267,14 +295,37 @@ td.sm{font-size:11px;color:var(--muted)}
 
 <!-- MODAL TAREA -->
 <div class="modal-bg" id="modal-tarea"><div class="modal">
-  <div class="modal-title"><span>Tarea</span></div>
+  <div class="modal-title"><span id="mt-modal-title">Nueva tarea</span></div>
   <div class="f-row"><label>Título</label><input id="mt-titulo" placeholder="Qué hay que hacer..."></div>
   <div class="f-row"><label>Descripción</label><textarea id="mt-desc" rows="2" placeholder="Detalle opcional..."></textarea></div>
   <div class="f-grid">
-    <div class="f-row"><label>Prioridad</label><select id="mt-pri"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select></div>
-    <div class="f-row"><label>Responsable</label><select id="mt-resp"><option>Pablo</option><option>Estefanía</option><option>Ambos</option></select></div>
+    <div class="f-row"><label>Estado</label>
+      <select id="mt-estado">
+        <option value="pendiente">Pendiente</option>
+        <option value="en_proceso">En proceso</option>
+        <option value="completado">Completado</option>
+      </select>
+    </div>
+    <div class="f-row"><label>Prioridad</label>
+      <select id="mt-pri">
+        <option value="alta">Alta</option>
+        <option value="media" selected>Media</option>
+        <option value="baja">Baja</option>
+      </select>
+    </div>
   </div>
-  <div class="modal-acts"><button class="btn-cancel" onclick="closeModal('tarea')">Cancelar</button><button class="btn-save" onclick="saveTarea()">Guardar</button></div>
+  <div class="f-grid">
+    <div class="f-row"><label>Responsable</label>
+      <select id="mt-resp"><option>Pablo</option><option>Estefanía</option><option>Ambos</option></select>
+    </div>
+    <div class="f-row"><label>Fecha límite</label>
+      <input type="date" id="mt-fecha">
+    </div>
+  </div>
+  <div class="modal-acts">
+    <button class="btn-cancel" type="button" onclick="closeModal('tarea')">Cancelar</button>
+    <button class="btn-save" type="button" onclick="saveTarea()">Guardar</button>
+  </div>
 </div></div>
 
 <script>
@@ -319,18 +370,18 @@ let pagosItems=[
   {id:9,fecha:'—',concepto:'Equipamiento (horno+congeladores+cafetera+lavamanos+molinillo)',proveedor:'Varios proveedores',responsable:'Pablo/Estefanía',metodo:'Varios',importe:5725,categoria:'Equipamiento'},
 ];
 let tareasItems=[
-  {id:1,titulo:'Cotización masa congelada con proveedor',desc:'Confirmar €/kg, unidades mínimas y lead time',prioridad:'alta',responsable:'Pablo',done:false},
-  {id:2,titulo:'Confirmar fechas de pago del equipamiento',desc:'Completar columna Fecha/Resp. del CAPEX',prioridad:'media',responsable:'Ambos',done:false},
-  {id:3,titulo:'Cotización cristales / vitrinas',desc:'Presupuesto para expositores y vitrinas de producto',prioridad:'media',responsable:'Estefanía',done:false},
-  {id:4,titulo:'Pago segundo 50% reforma',desc:'€600 pendientes según presupuesto cerrado',prioridad:'alta',responsable:'Estefanía',done:false},
-  {id:5,titulo:'Obtener licencia sanitaria',desc:'Tramitar con Ayuntamiento de Granada',prioridad:'alta',responsable:'Ambos',done:false},
-  {id:6,titulo:'Licencia apertura / actividad',desc:'Estimado €400 — Ayuntamiento Granada',prioridad:'alta',responsable:'Ambos',done:false},
-  {id:7,titulo:'Señalética y rotulación exterior',desc:'Presupuesto pendiente — crítico para apertura',prioridad:'media',responsable:'Estefanía',done:false},
-  {id:8,titulo:'Validar gramaje prototipo (~15g/fry)',desc:'Test con masa congelada real antes de fijar carta definitiva',prioridad:'alta',responsable:'Pablo',done:false},
-  {id:9,titulo:'Diseño de marca con Luis Escobar',desc:'€604 pendiente de pago — manual de marca incluido',prioridad:'media',responsable:'Pablo',done:false},
-  {id:10,titulo:'Packaging — primera tirada',desc:'Cajas y sleeves DOPI para lanzamiento',prioridad:'baja',responsable:'Estefanía',done:false},
-  {id:11,titulo:'Inventario inicial masa congelada',desc:'Stock de 2-3 semanas para apertura',prioridad:'media',responsable:'Pablo',done:false},
-  {id:12,titulo:'Ficha técnica APPCC',desc:'Documento de autocontrol sanitario obligatorio',prioridad:'alta',responsable:'Ambos',done:false},
+  {id:1,titulo:'Cotización masa congelada con proveedor',desc:'Confirmar €/kg, unidades mínimas y lead time',prioridad:'alta',responsable:'Pablo',estado:'pendiente',fecha:''},
+  {id:2,titulo:'Confirmar fechas de pago del equipamiento',desc:'Completar columna Fecha/Resp. del CAPEX',prioridad:'media',responsable:'Ambos',estado:'pendiente',fecha:''},
+  {id:3,titulo:'Cotización cristales / vitrinas',desc:'Presupuesto para expositores y vitrinas de producto',prioridad:'media',responsable:'Estefanía',estado:'pendiente',fecha:''},
+  {id:4,titulo:'Pago segundo 50% reforma',desc:'€600 pendientes según presupuesto cerrado',prioridad:'alta',responsable:'Estefanía',estado:'pendiente',fecha:''},
+  {id:5,titulo:'Obtener licencia sanitaria',desc:'Tramitar con Ayuntamiento de Granada',prioridad:'alta',responsable:'Ambos',estado:'pendiente',fecha:''},
+  {id:6,titulo:'Licencia apertura / actividad',desc:'Estimado €400 — Ayuntamiento Granada',prioridad:'alta',responsable:'Ambos',estado:'pendiente',fecha:''},
+  {id:7,titulo:'Señalética y rotulación exterior',desc:'Presupuesto pendiente — crítico para apertura',prioridad:'media',responsable:'Estefanía',estado:'pendiente',fecha:''},
+  {id:8,titulo:'Validar gramaje prototipo (~15g/fry)',desc:'Test con masa congelada real antes de fijar carta definitiva',prioridad:'alta',responsable:'Pablo',estado:'pendiente',fecha:''},
+  {id:9,titulo:'Diseño de marca con Luis Escobar',desc:'€604 pendiente de pago — manual de marca incluido',prioridad:'media',responsable:'Pablo',estado:'pendiente',fecha:''},
+  {id:10,titulo:'Packaging — primera tirada',desc:'Cajas y sleeves DOPI para lanzamiento',prioridad:'baja',responsable:'Estefanía',estado:'pendiente',fecha:''},
+  {id:11,titulo:'Inventario inicial masa congelada',desc:'Stock de 2-3 semanas para apertura',prioridad:'media',responsable:'Pablo',estado:'pendiente',fecha:''},
+  {id:12,titulo:'Ficha técnica APPCC',desc:'Documento de autocontrol sanitario obligatorio',prioridad:'alta',responsable:'Ambos',estado:'pendiente',fecha:''},
 ];
 let nextCapexId=40,nextPagoId=20,nextTareaId=20,editCapexId=null,editPagoId=null,editTareaId=null;
 let donutChart,barChart,lineChart;
@@ -461,24 +512,99 @@ function renderPagos(){
     <td><div class="acts"><button class="btn-ic" onclick="editPagoItem(${p.id})">✏</button><button class="btn-ic del" onclick="deletePago(${p.id})">✕</button></div></td>
   </tr>`;}).join('')+`<tr class="tot-row"><td colspan="6" class="bold">TOTAL (excl. capital social)</td><td class="r" style="color:#16a34a">${fmt(totalReal)}</td><td></td></tr>`;
 }
+const ESTADO_LABEL={pendiente:'Pendiente',en_proceso:'En proceso',completado:'Completado'};
+const ESTADO_ORDER={pendiente:0,en_proceso:1,completado:2};
+const PRI_ORDER={alta:0,media:1,baja:2};
+let activeFilter='all';
+
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderTareas();
+}
+
+function fechaLabel(fecha){
+  if(!fecha)return'';
+  const hoy=new Date();hoy.setHours(0,0,0,0);
+  const d=new Date(fecha);d.setHours(0,0,0,0);
+  const diff=Math.round((d-hoy)/(1000*60*60*24));
+  if(diff<0)return{text:'Vencida hace '+ Math.abs(diff)+'d',cls:'urgente'};
+  if(diff===0)return{text:'Vence hoy',cls:'urgente'};
+  if(diff<=3)return{text:'En '+diff+'d',cls:'pronto'};
+  if(diff<=7)return{text:'Esta semana',cls:'pronto'};
+  return{text:d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'}),cls:''};
+}
+
 function renderTareas(){
   const list=document.getElementById('tareas-list');
-  const done=tareasItems.filter(t=>t.done).length;
-  document.getElementById('tareas-count').textContent=`${done}/${tareasItems.length} completadas`;
-  list.innerHTML=tareasItems.map(t=>`<div class="tarea${t.done?' done':''}" onclick="toggleTarea(${t.id})">
-    <div class="tarea-check"><span class="tarea-check-mark">✓</span></div>
-    <div class="tarea-body">
-      <div class="tarea-title">${t.titulo}</div>
-      ${t.desc?`<div class="tarea-desc">${t.desc}</div>`:''}
-      <div class="tarea-meta"><span class="tarea-pri pri-${t.prioridad}">${t.prioridad}</span><span style="font-size:11px;color:var(--faint)">${t.responsable}</span></div>
-    </div>
-    <div style="display:flex;gap:5px;flex-shrink:0" onclick="event.stopPropagation()">
-      <button class="btn-ic" onclick="editTareaItem(${t.id})">✏</button>
-      <button class="btn-ic del" onclick="deleteTarea(${t.id})">✕</button>
-    </div>
-  </div>`).join('')+`<button class="btn-tarea-add" onclick="openTarea()">+ Nueva tarea</button>`;
+  const completadas=tareasItems.filter(t=>(t.estado||'pendiente')==='completado').length;
+  const enProceso=tareasItems.filter(t=>(t.estado||'pendiente')==='en_proceso').length;
+  document.getElementById('tareas-count').textContent=`${completadas} completadas · ${enProceso} en proceso`;
+
+  // Filter
+  let items=[...tareasItems];
+  if(activeFilter==='alta'||activeFilter==='media'||activeFilter==='baja'){
+    items=items.filter(t=>t.prioridad===activeFilter);
+  } else if(activeFilter==='pendiente'||activeFilter==='en_proceso'||activeFilter==='completado'){
+    items=items.filter(t=>(t.estado||'pendiente')===activeFilter);
+  }
+
+  // Sort
+  const sortBy=document.getElementById('tareas-sort')?.value||'estado';
+  if(sortBy==='estado'){
+    items.sort((a,b)=>ESTADO_ORDER[a.estado||'pendiente']-ESTADO_ORDER[b.estado||'pendiente']);
+  } else if(sortBy==='fecha'){
+    items.sort((a,b)=>{
+      if(!a.fecha&&!b.fecha)return 0;
+      if(!a.fecha)return 1;
+      if(!b.fecha)return -1;
+      return new Date(a.fecha)-new Date(b.fecha);
+    });
+  } else if(sortBy==='prioridad'){
+    items.sort((a,b)=>PRI_ORDER[a.prioridad]-PRI_ORDER[b.prioridad]);
+  }
+
+  if(!items.length){
+    list.innerHTML=`<div style="text-align:center;padding:32px;color:var(--faint);font-size:14px">Sin tareas con este filtro</div><button class="btn-tarea-add" onclick="openTarea()">+ Nueva tarea</button>`;
+    return;
+  }
+
+  list.innerHTML=items.map(t=>{
+    const est=t.estado||'pendiente';
+    const isDone=est==='completado';
+    const fl=t.fecha?fechaLabel(t.fecha):null;
+    return`<div class="tarea${isDone?' done':''}" style="cursor:default">
+      <div class="tarea-check" onclick="cycleEstado(${t.id})" style="cursor:pointer" title="Cambiar estado">
+        <span class="tarea-check-mark">✓</span>
+      </div>
+      <div class="tarea-body">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div class="tarea-title">${t.titulo}</div>
+          ${fl?`<span class="tarea-fecha ${fl.cls}">${fl.text}</span>`:''}
+        </div>
+        ${t.desc?`<div class="tarea-desc">${t.desc}</div>`:''}
+        <div class="tarea-meta">
+          <span class="tarea-pri est-${est}">${ESTADO_LABEL[est]}</span>
+          <span class="tarea-pri pri-${t.prioridad}">${t.prioridad}</span>
+          <span style="font-size:11px;color:var(--faint)">${t.responsable}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:5px;flex-shrink:0">
+        <button class="btn-ic" onclick="editTareaItem(${t.id})">✏</button>
+        <button class="btn-ic del" onclick="deleteTarea(${t.id})">✕</button>
+      </div>
+    </div>`;
+  }).join('')+`<button class="btn-tarea-add" onclick="openTarea()">+ Nueva tarea</button>`;
 }
-function toggleTarea(id){const t=tareasItems.find(i=>i.id===id);if(t){t.done=!t.done;saveData();renderTareas();}}
+function cycleEstado(id){
+  const t=tareasItems.find(i=>i.id===id);
+  if(!t)return;
+  const order=['pendiente','en_proceso','completado'];
+  const cur=order.indexOf(t.estado||'pendiente');
+  t.estado=order[(cur+1)%3];
+  saveData();renderTareas();
+}
 
 function switchTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');
@@ -493,9 +619,51 @@ function openPago(){editPagoId=null;document.getElementById('mp-title').textCont
 function editPagoItem(id){const p=pagosItems.find(i=>i.id===id);if(!p)return;editPagoId=id;document.getElementById('mp-title').textContent='Editar';document.getElementById('mp-concepto').value=p.concepto;document.getElementById('mp-proveedor').value=p.proveedor==='—'?'':p.proveedor;document.getElementById('mp-importe').value=p.importe;document.getElementById('mp-resp').value=p.responsable;document.getElementById('mp-metodo').value=p.metodo;document.getElementById('mp-cat').value=p.categoria;document.getElementById('modal-pago').classList.add('open');}
 function savePago(){const concepto=document.getElementById('mp-concepto').value.trim();const importe=parseFloat(document.getElementById('mp-importe').value);if(!concepto||!importe){alert('Rellena concepto e importe');return;}const rawFecha=document.getElementById('mp-fecha').value;let fecha='—';if(rawFecha){const d=new Date(rawFecha);fecha=d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});}const pago={id:editPagoId||nextPagoId++,fecha,concepto,proveedor:document.getElementById('mp-proveedor').value||'—',responsable:document.getElementById('mp-resp').value,metodo:document.getElementById('mp-metodo').value,importe,categoria:document.getElementById('mp-cat').value};if(editPagoId){const idx=pagosItems.findIndex(i=>i.id===editPagoId);pagosItems[idx]=pago;}else pagosItems.push(pago);closeModal('pago');saveData();renderPagos();updateKPIs();buildCharts();}
 function deletePago(id){if(!confirm('¿Eliminar?'))return;pagosItems=pagosItems.filter(i=>i.id!==id);saveData();renderPagos();updateKPIs();buildCharts();}
-function openTarea(){editTareaId=null;['mt-titulo','mt-desc'].forEach(id=>document.getElementById(id).value='');document.getElementById('mt-pri').value='media';document.getElementById('mt-resp').selectedIndex=0;document.getElementById('modal-tarea').classList.add('open');}
-function editTareaItem(id){const t=tareasItems.find(i=>i.id===id);if(!t)return;editTareaId=id;document.getElementById('mt-titulo').value=t.titulo;document.getElementById('mt-desc').value=t.desc||'';document.getElementById('mt-pri').value=t.prioridad;document.getElementById('mt-resp').value=t.responsable;document.getElementById('modal-tarea').classList.add('open');}
-function saveTarea(){const titulo=document.getElementById('mt-titulo').value.trim();if(!titulo){alert('Escribe el título');return;}const tarea={id:editTareaId||nextTareaId++,titulo,desc:document.getElementById('mt-desc').value,prioridad:document.getElementById('mt-pri').value,responsable:document.getElementById('mt-resp').value,done:editTareaId?(tareasItems.find(t=>t.id===editTareaId)||{}).done||false:false};if(editTareaId){const idx=tareasItems.findIndex(t=>t.id===editTareaId);tareasItems[idx]=tarea;}else tareasItems.push(tarea);closeModal('tarea');saveData();renderTareas();}
+function openTarea(){
+  editTareaId=null;
+  document.getElementById('mt-modal-title').textContent='Nueva tarea';
+  ['mt-titulo','mt-desc','mt-fecha'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mt-pri').value='media';
+  document.getElementById('mt-estado').value='pendiente';
+  document.getElementById('mt-resp').selectedIndex=0;
+  document.getElementById('modal-tarea').classList.add('open');
+}
+function editTareaItem(id){
+  const t=tareasItems.find(i=>i.id===id);
+  if(!t)return;
+  editTareaId=id;
+  document.getElementById('mt-modal-title').textContent='Editar tarea';
+  document.getElementById('mt-titulo').value=t.titulo;
+  document.getElementById('mt-desc').value=t.desc||'';
+  document.getElementById('mt-pri').value=t.prioridad;
+  document.getElementById('mt-estado').value=t.estado||'pendiente';
+  document.getElementById('mt-resp').value=t.responsable;
+  document.getElementById('mt-fecha').value=t.fecha||'';
+  document.getElementById('modal-tarea').classList.add('open');
+}
+function saveTarea(){
+  const titulo=document.getElementById('mt-titulo').value.trim();
+  if(!titulo){alert('Escribe el título');return;}
+  const tarea={
+    id:editTareaId||nextTareaId++,
+    titulo,
+    desc:document.getElementById('mt-desc').value||'',
+    prioridad:document.getElementById('mt-pri').value,
+    estado:document.getElementById('mt-estado').value,
+    responsable:document.getElementById('mt-resp').value,
+    fecha:document.getElementById('mt-fecha').value||'',
+  };
+  if(editTareaId){
+    const idx=tareasItems.findIndex(t=>t.id===editTareaId);
+    tareasItems[idx]=tarea;
+  } else {
+    tareasItems.push(tarea);
+  }
+  editTareaId=null;
+  closeModal('tarea');
+  saveData();
+  renderTareas();
+}
 function deleteTarea(id){if(!confirm('¿Eliminar?'))return;tareasItems=tareasItems.filter(t=>t.id!==id);saveData();renderTareas();}
 
 // ══════════════════════════════════════
