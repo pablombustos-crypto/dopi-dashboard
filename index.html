@@ -18,44 +18,52 @@
 html{font-size:15px}
 body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 .mono{font-family:'JetBrains Mono',monospace}
-.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
+/* TOPBAR */
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-badge{background:var(--rosa);color:#fff;font-weight:700;font-size:12px;letter-spacing:.1em;padding:4px 11px;border-radius:20px}
 .logo-sub{font-size:13px;color:var(--muted);font-weight:500}
 .topbar-date{font-size:12px;color:var(--faint);font-family:'JetBrains Mono',monospace}
-.tabs{background:var(--white);border-bottom:1px solid var(--border);display:flex;gap:0;padding:0 20px;overflow-x:auto}
+/* TABS */
+.tabs{background:var(--white);border-bottom:1px solid var(--border);display:flex;padding:0 20px;overflow-x:auto}
 .tab{padding:12px 18px;font-size:13px;font-weight:600;color:var(--muted);border:none;border-bottom:2px solid transparent;background:none;cursor:pointer;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
 .tab.active{color:var(--rosa);border-bottom-color:var(--rosa)}
 .tab:hover{color:var(--text)}
+/* MAIN */
 .main{padding:20px;max-width:1100px;margin:0 auto}
+/* KPIs */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
 .kpi-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
 .kpi-val{font-size:22px;font-weight:700;line-height:1;font-family:'JetBrains Mono',monospace}
 .kpi-val.rosa{color:var(--rosa)}.kpi-val.verde{color:var(--verde)}.kpi-val.naranja{color:var(--naranja)}.kpi-val.azul{color:var(--azul)}
 .kpi-sub{font-size:11px;color:var(--faint);margin-top:4px}
+/* PROGRESS GLOBAL */
 .progress-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:20px}
-.progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .progress-label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .progress-pct{font-size:20px;font-weight:700;color:var(--rosa);font-family:'JetBrains Mono',monospace}
 .bar-bg{background:var(--border2);border-radius:99px;height:7px;overflow:hidden;margin-bottom:8px}
 .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--rosa),var(--naranja));transition:width .7s cubic-bezier(.4,0,.2,1)}
 .bar-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace}
-.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-.chart-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
-.chart-title{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-.chart-wrap{position:relative;height:180px}
+/* ITEM PROGRESS BAR */
+.item-bar-bg{background:var(--border2);border-radius:99px;height:5px;overflow:hidden;margin-top:6px;flex:1}
+.item-bar-fill{height:100%;border-radius:99px;transition:width .5s ease}
+/* SECTION */
 .sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .sec-title{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .btn-add{display:flex;align-items:center;gap:6px;background:var(--rosa);color:#fff;border:none;border-radius:9px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s}
 .btn-add:hover{opacity:.85}
-
+.btn-sm{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:7px;background:none;color:var(--mid);font-size:11px;font-weight:600;padding:4px 9px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.btn-sm:hover{border-color:var(--rosa);color:var(--rosa);background:var(--rosa-soft)}
+.btn-sm.verde:hover{border-color:var(--verde);color:var(--verde);background:var(--verde-soft)}
+/* TABLE WRAP */
 .tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
 .tbl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .cat-hd{background:var(--surface);border-bottom:1px solid var(--border);padding:9px 16px;display:flex;align-items:center;justify-content:space-between}
 .cat-nm{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--mid);display:flex;align-items:center;gap:7px}
 .cat-totals{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-table{width:100%;border-collapse:collapse;min-width:600px}
+table{width:100%;border-collapse:collapse;min-width:560px}
 th{padding:9px 13px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);border-bottom:1px solid var(--border2);background:#fafaf8;text-align:left;font-family:'JetBrains Mono',monospace;white-space:nowrap}
 th.r{text-align:right}
 td{padding:10px 13px;font-size:13px;border-bottom:1px solid var(--border2);vertical-align:middle;color:var(--text)}
@@ -64,31 +72,44 @@ tr:hover td{background:var(--surface)}
 td.r{text-align:right;font-family:'JetBrains Mono',monospace;font-size:12px}
 td.bold{font-weight:600}
 td.sm{font-size:11px;color:var(--muted)}
-/* ── MOBILE CARDS (CAPEX) ── */
+/* BADGES */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:99px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* STATUS SELECT */
+.status-sel{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;text-transform:uppercase;appearance:none;-webkit-appearance:none}
+.s-pagado{background:#dcfce7;color:#15803d}
+.s-pendiente{background:#fff7ed;color:#c2410c}
+.s-parcial{background:#fefce8;color:#a16207}
+.s-curso{background:#eff6ff;color:#1d4ed8}
+.s-depositado{background:#f5f3ff;color:#6d28d9}
+/* ACTIONS */
+.acts{display:flex;gap:5px;justify-content:flex-end;flex-wrap:wrap}
+.btn-ic{background:none;border:1px solid var(--border);border-radius:7px;color:var(--faint);cursor:pointer;padding:4px 8px;font-size:11px;transition:all .15s;line-height:1}
+.btn-ic:hover{border-color:var(--rosa);color:var(--rosa);background:var(--rosa-soft)}
+.btn-ic.del:hover{border-color:#ef4444;color:#ef4444;background:#fff5f5}
+.btn-ic.pay{border-color:#16a34a;color:#16a34a}
+.btn-ic.pay:hover{background:var(--verde-soft)}
+/* TOTAL ROW */
+.tot-row td{font-weight:700;background:var(--verde-soft)!important;border-top:1px solid #bbf7d0;font-family:'JetBrains Mono',monospace;font-size:12px}
+/* MOBILE CARDS */
 .item-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
 .item-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
 .item-card-name{font-size:14px;font-weight:600;color:var(--text);line-height:1.3;flex:1}
 .item-card-amounts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:10px}
 .item-card-amount{background:var(--bg);border-radius:8px;padding:7px 10px}
-.item-card-amount-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;font-family:'JetBrains Mono',monospace}
-.item-card-amount-val{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text)}
-.item-card-amount-val.pagado{color:var(--verde)}
-.item-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.item-card-nota{font-size:11px;color:var(--muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ica-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;font-family:'JetBrains Mono',monospace}
+.ica-val{font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--text)}
+.ica-val.pagado{color:var(--verde)}
+.item-card-bottom{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .desktop-table{display:block}
 .mobile-cards{display:none}
-.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.04em;padding:3px 9px;border-radius:99px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
-.dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.acts{display:flex;gap:5px;justify-content:flex-end}
-.btn-ic{background:none;border:1px solid var(--border);border-radius:7px;color:var(--faint);cursor:pointer;padding:4px 8px;font-size:11px;transition:all .15s;line-height:1}
-.btn-ic:hover{border-color:var(--rosa);color:var(--rosa);background:var(--rosa-soft)}
-.btn-ic.del:hover{border-color:#ef4444;color:#ef4444;background:#fff5f5}
-.tot-row td{font-weight:700;background:var(--verde-soft)!important;border-top:1px solid #bbf7d0;font-family:'JetBrains Mono',monospace;font-size:12px}
+/* MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
 .modal-bg.open{display:flex}
 .modal{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:24px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.12)}
-.modal-title{font-size:17px;font-weight:700;margin-bottom:18px}
+.modal-title{font-size:17px;font-weight:700;margin-bottom:4px}
 .modal-title span{color:var(--rosa)}
+.modal-subtitle{font-size:12px;color:var(--muted);margin-bottom:18px}
 .f-row{margin-bottom:12px}
 .f-row label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .f-row input,.f-row select,.f-row textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:border-color .15s}
@@ -99,28 +120,23 @@ td.sm{font-size:11px;color:var(--muted)}
 .btn-cancel:hover{background:var(--bg)}
 .btn-save{flex:2;padding:10px;border:none;border-radius:9px;background:var(--rosa);color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s}
 .btn-save:hover{opacity:.88}
-.tareas-list{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
-.tarea{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:all .15s}
-.tarea:hover{border-color:var(--rosa);background:var(--rosa-soft)}
-.tarea-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px}
-.tarea.done .tarea-check{background:var(--verde);border-color:var(--verde)}
-.tarea-check-mark{display:none;color:#fff;font-size:12px}
-.tarea.done .tarea-check-mark{display:block}
-.tarea-body{flex:1}
-.tarea-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
-.tarea.done .tarea-title{text-decoration:line-through;color:var(--muted)}
-.tarea-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
-.tarea-meta{display:flex;align-items:center;gap:8px;margin-top:6px}
-.tarea-pri{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
-.pri-alta{background:#fee2e2;color:#b91c1c}
-.pri-media{background:var(--amarillo-soft);color:#a16207}
-.pri-baja{background:var(--azul-soft);color:#1d4ed8}
-.est-pendiente{background:var(--naranja-soft);color:#c2410c}
-.est-en_proceso{background:var(--azul-soft);color:#1d4ed8}
-.est-completado{background:var(--verde-soft);color:#15803d}
-.btn-tarea-add{width:100%;padding:11px;border:1.5px dashed var(--border);border-radius:12px;background:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
-.btn-tarea-add:hover{border-color:var(--rosa);color:var(--rosa);background:var(--rosa-soft)}
-.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+/* PAGOS VINCULADOS dentro de CAPEX */
+.pagos-list{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.pago-chip{display:flex;align-items:center;gap:8px;background:var(--verde-soft);border:1px solid #bbf7d0;border-radius:8px;padding:5px 10px;font-size:11px}
+.pago-chip-fecha{color:var(--muted);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.pago-chip-importe{font-weight:700;color:var(--verde);font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.pago-chip-metodo{color:var(--muted);flex:1}
+.pago-chip-del{background:none;border:none;color:var(--faint);cursor:pointer;font-size:12px;padding:0 2px;line-height:1}
+.pago-chip-del:hover{color:#ef4444}
+/* UPLOAD */
+.upload-area{border:1.5px dashed var(--border);border-radius:9px;padding:12px 16px;cursor:pointer;text-align:center;transition:all .15s;background:var(--bg)}
+.upload-area:hover{border-color:var(--rosa);background:var(--rosa-soft)}
+.upload-preview{display:none;margin-top:8px;padding:7px 12px;background:var(--verde-soft);border:1px solid #bbf7d0;border-radius:8px;font-size:12px;align-items:center;gap:8px;justify-content:space-between}
+.upload-progress{display:none;margin-top:8px}
+.upload-bar-bg{background:var(--border2);border-radius:99px;height:4px;overflow:hidden}
+.upload-bar-fill{height:100%;background:var(--rosa);width:0%;transition:width .3s;border-radius:99px}
+/* TAREAS */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .filter-pill{padding:6px 13px;border-radius:99px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;white-space:nowrap}
 .filter-pill:hover{border-color:var(--rosa);color:var(--rosa)}
 .filter-pill.active{background:var(--text);border-color:var(--text);color:#fff}
@@ -128,19 +144,40 @@ td.sm{font-size:11px;color:var(--muted)}
 .filter-pill.f-media.active{background:#a16207;border-color:#a16207;color:#fff}
 .filter-pill.f-baja.active{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
 .sort-select{padding:6px 12px;border-radius:99px;border:1.5px solid var(--border);background:var(--white);color:var(--mid);font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;outline:none;appearance:none;-webkit-appearance:none;padding-right:24px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238a8a85' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.tarea{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.tarea-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;margin-top:1px}
+.tarea.done .tarea-check{background:var(--verde);border-color:var(--verde)}
+.t-check-mark{display:none;color:#fff;font-size:12px}
+.tarea.done .t-check-mark{display:block}
+.tarea-body{flex:1}
+.tarea-title{font-size:14px;font-weight:600;line-height:1.3}
+.tarea.done .tarea-title{text-decoration:line-through;color:var(--muted)}
+.tarea-desc{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.tarea-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.tarea-pri{font-size:10px;font-weight:600;padding:2px 8px;border-radius:99px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.pri-alta{background:#fee2e2;color:#b91c1c}
+.pri-media{background:var(--amarillo-soft);color:#a16207}
+.pri-baja{background:var(--azul-soft);color:#1d4ed8}
+.est-pendiente{background:var(--naranja-soft);color:#c2410c}
+.est-en_proceso{background:var(--azul-soft);color:#1d4ed8}
+.est-completado{background:var(--verde-soft);color:#15803d}
 .tarea-fecha{font-size:11px;color:var(--faint);font-family:'JetBrains Mono',monospace}
 .tarea-fecha.urgente{color:#b91c1c;font-weight:600}
 .tarea-fecha.pronto{color:#d97706;font-weight:600}
-.panel{display:none}
-.panel.active{display:block}
-.status-sel{font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;text-transform:uppercase;appearance:none;-webkit-appearance:none}
-.s-pagado{background:#dcfce7;color:#15803d}
-.s-pendiente{background:#fff7ed;color:#c2410c}
-.s-parcial{background:#fefce8;color:#a16207}
-.s-curso{background:#eff6ff;color:#1d4ed8}
-.s-depositado{background:#f5f3ff;color:#6d28d9}
+.btn-tarea-add{width:100%;padding:11px;border:1.5px dashed var(--border);border-radius:12px;background:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.btn-tarea-add:hover{border-color:var(--rosa);color:var(--rosa);background:var(--rosa-soft)}
+/* SUMMARY PILLS */
 .summary{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
 .spill{background:var(--white);border:1px solid var(--border);border-radius:99px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--mid);display:flex;align-items:center;gap:6px}
+/* CHARTS */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px 20px}
+.chart-title{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.chart-wrap{position:relative;height:180px}
+/* PANEL */
+.panel{display:none}.panel.active{display:block}
+/* COMPROBANTE LINK */
+.comp-link{display:inline-flex;align-items:center;gap:4px;color:var(--azul);font-size:11px;font-weight:600;text-decoration:none;padding:3px 8px;background:var(--azul-soft);border-radius:6px}
 @media(max-width:640px){
   .kpis{grid-template-columns:1fr 1fr}
   .charts-row{grid-template-columns:1fr}
@@ -150,8 +187,7 @@ td.sm{font-size:11px;color:var(--muted)}
   .f-grid{grid-template-columns:1fr}
   .desktop-table{display:none}
   .mobile-cards{display:block}
-  .pagos-table-wrap table{min-width:580px}
-  .esc-row{flex-direction:row}
+  .item-card-amounts{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -161,33 +197,41 @@ td.sm{font-size:11px;color:var(--muted)}
   <span class="topbar-date mono" id="today"></span>
 </div>
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('resumen')">Resumen</button>
-  <button class="tab" onclick="switchTab('capex')">CAPEX</button>
-  <button class="tab" onclick="switchTab('pagos')">Pagos Reales</button>
-  <button class="tab" onclick="switchTab('tareas')">Tareas</button>
+  <button class="tab active" onclick="switchTab('resumen',this)">Resumen</button>
+  <button class="tab" onclick="switchTab('capex',this)">CAPEX</button>
+  <button class="tab" onclick="switchTab('pagos',this)">Pagos Reales</button>
+  <button class="tab" onclick="switchTab('tareas',this)">Tareas</button>
 </div>
 <div class="main">
+
+<!-- KPIs -->
 <div class="kpis">
-  <div class="kpi"><div class="kpi-label">CAPEX Base</div><div class="kpi-val rosa" id="k-total">—</div><div class="kpi-sub">Presupuesto total</div></div>
-  <div class="kpi"><div class="kpi-label">Desembolsado</div><div class="kpi-val verde" id="k-pagado">—</div><div class="kpi-sub">Confirmado pagado</div></div>
+  <div class="kpi"><div class="kpi-label">CAPEX Presupuestado</div><div class="kpi-val rosa" id="k-total">—</div><div class="kpi-sub">Total previsto</div></div>
+  <div class="kpi"><div class="kpi-label">Desembolsado</div><div class="kpi-val verde" id="k-pagado">—</div><div class="kpi-sub">Pagos registrados</div></div>
   <div class="kpi"><div class="kpi-label">Pendiente</div><div class="kpi-val naranja" id="k-pendiente">—</div><div class="kpi-sub">Por invertir</div></div>
-  <div class="kpi"><div class="kpi-label">Pagos reales</div><div class="kpi-val azul" id="k-pagos">—</div><div class="kpi-sub">Excl. capital social</div></div>
+  <div class="kpi"><div class="kpi-label">Excl. capital social</div><div class="kpi-val azul" id="k-excl">—</div><div class="kpi-sub">Gasto real neto</div></div>
 </div>
+
+<!-- PROGRESS GLOBAL -->
 <div class="progress-card">
   <div class="progress-row"><span class="progress-label">Ejecución presupuestaria</span><span class="progress-pct mono" id="p-pct">0%</span></div>
   <div class="bar-bg"><div class="bar-fill" id="p-bar" style="width:0%"></div></div>
   <div class="bar-labels"><span>€0</span><span id="p-max">—</span></div>
 </div>
+
+<!-- PANEL RESUMEN -->
 <div class="panel active" id="panel-resumen">
   <div class="charts-row">
-    <div class="chart-card"><div class="chart-title">CAPEX por categoría (Base)</div><div class="chart-wrap"><canvas id="chart-donut"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">Estado de inversión</div><div class="chart-wrap"><canvas id="chart-bar"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">CAPEX por categoría</div><div class="chart-wrap"><canvas id="chart-donut" role="img" aria-label="Donut CAPEX por categoría">CAPEX por categoría.</canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Estado de inversión</div><div class="chart-wrap"><canvas id="chart-bar" role="img" aria-label="Pagado vs pendiente por categoría">Pagado vs pendiente.</canvas></div></div>
   </div>
   <div class="summary" id="summary-pills"></div>
   <div class="charts-row" style="grid-template-columns:1fr">
-    <div class="chart-card"><div class="chart-title">Pagos reales acumulados</div><div class="chart-wrap" style="height:160px"><canvas id="chart-line"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">Pagos acumulados en el tiempo</div><div class="chart-wrap" style="height:160px"><canvas id="chart-line" role="img" aria-label="Pagos acumulados">Pagos acumulados.</canvas></div></div>
   </div>
 </div>
+
+<!-- PANEL CAPEX -->
 <div class="panel" id="panel-capex">
   <div class="sec-hd">
     <span class="sec-title">CAPEX — Presupuesto & pagos</span>
@@ -195,15 +239,25 @@ td.sm{font-size:11px;color:var(--muted)}
   </div>
   <div id="capex-tables"></div>
 </div>
+
+<!-- PANEL PAGOS (vista generada desde CAPEX) -->
 <div class="panel" id="panel-pagos">
-  <div class="sec-hd"><span class="sec-title">Registro de pagos</span><button class="btn-add" onclick="openPago()">+ Añadir pago</button></div>
+  <div class="sec-hd">
+    <span class="sec-title">Pagos reales</span>
+    <span style="font-size:12px;color:var(--muted)">Generado automáticamente desde CAPEX</span>
+  </div>
   <div class="tbl-wrap">
-    <div class="cat-hd"><span class="cat-nm">Movimientos</span><span class="cat-totals" id="pagos-label">—</span></div>
-    <div class="tbl-scroll pagos-table-wrap"><table><thead><tr>
-      <th>Fecha</th><th>Concepto</th><th>Proveedor</th><th>Resp.</th><th>Método</th><th>Categoría</th><th class="r">Importe</th><th></th>
-    </tr></thead><tbody id="pagos-body"></tbody></table></div>
+    <div class="cat-hd"><span class="cat-nm">Todos los pagos registrados</span><span class="cat-totals" id="pagos-label">—</span></div>
+    <div class="tbl-scroll"><table>
+      <thead><tr>
+        <th>Fecha</th><th>Concepto CAPEX</th><th>Categoría</th><th>Responsable</th><th>Método</th><th class="r">Importe</th><th>Comprobante</th>
+      </tr></thead>
+      <tbody id="pagos-body"></tbody>
+    </table></div>
   </div>
 </div>
+
+<!-- PANEL TAREAS -->
 <div class="panel" id="panel-tareas">
   <div class="sec-hd">
     <span class="sec-title">Tareas</span>
@@ -226,13 +280,14 @@ td.sm{font-size:11px;color:var(--muted)}
       <option value="prioridad">🔴 Prioridad</option>
     </select>
   </div>
-  <div class="tareas-list" id="tareas-list"></div>
+  <div id="tareas-list"></div>
 </div>
-</div>
+</div><!-- /main -->
 
-<!-- MODAL CAPEX -->
+<!-- MODAL CAPEX ITEM -->
 <div class="modal-bg" id="modal-capex"><div class="modal">
-  <div class="modal-title"><span id="mc-title">CAPEX</span> — item</div>
+  <div class="modal-title"><span id="mc-title">Nuevo item</span> CAPEX</div>
+  <div class="modal-subtitle" id="mc-subtitle"></div>
   <div class="f-row"><label>Concepto</label><input id="mc-concepto" placeholder="Ej. Vitrina expositor"></div>
   <div class="f-row"><label>Categoría</label><select id="mc-cat">
     <option value="COSTES LEGALES & LOCAL">Costes Legales & Local</option>
@@ -243,195 +298,231 @@ td.sm{font-size:11px;color:var(--muted)}
   </select></div>
   <div class="f-grid">
     <div class="f-row"><label>Presupuesto (€)</label><input type="number" id="mc-presupuesto" placeholder="0" min="0" step="0.01"></div>
-    <div class="f-row"><label>Pagado real (€)</label><input type="number" id="mc-pagado" placeholder="0" min="0" step="0.01"></div>
+    <div class="f-row"><label>Estado</label><select id="mc-estado">
+      <option value="PENDIENTE">Pendiente</option><option value="PAGADO">Pagado</option>
+      <option value="PARCIAL">Parcial</option><option value="EN CURSO">En curso</option><option value="DEPOSITADO">Depositado</option>
+    </select></div>
   </div>
-  <div class="f-row">
-    <label>Comprobante</label>
-    <div id="mc-upload-area" onclick="triggerUpload()" style="border:1.5px dashed var(--border);border-radius:9px;padding:14px 16px;cursor:pointer;text-align:center;transition:all .15s;background:var(--bg)" onmouseover="this.style.borderColor='var(--rosa)';this.style.background='var(--rosa-soft)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--bg)'">
-      <div id="mc-upload-label" style="font-size:13px;color:var(--muted)">📎 Toca para subir foto, PDF o imagen</div>
-      <input type="file" id="mc-file-input" accept="image/*,application/pdf" style="display:none" onchange="handleUpload(this)">
+  <div class="f-row"><label>Nota / proveedor</label><input id="mc-nota" placeholder="Proveedor, referencia..."></div>
+  <div class="f-row"><label>Comprobante del presupuesto (PDF, foto, imagen)</label>
+    <div class="upload-area" id="mc-upload-area" onclick="document.getElementById('mc-file-input').click()">
+      <div id="mc-upload-label" style="font-size:13px;color:var(--muted)">📎 Subir presupuesto, factura proforma o imagen</div>
+      <input type="file" id="mc-file-input" accept="image/*,application/pdf" style="display:none" onchange="handleUpload(this,'mc')">
     </div>
-    <input type="hidden" id="mc-comprobante">
-    <div id="mc-upload-preview" style="display:none;margin-top:8px;padding:8px 12px;background:var(--verde-soft);border:1px solid #bbf7d0;border-radius:8px;font-size:12px;display:flex;align-items:center;gap:8px;justify-content:space-between">
+    <input type="hidden" id="mc-comprobante" value="">
+    <div class="upload-preview" id="mc-upload-preview">
       <span id="mc-upload-name" style="color:var(--verde);font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-      <button type="button" onclick="clearUpload()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;flex-shrink:0">✕</button>
+      <button type="button" onclick="clearUpload('mc')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px">✕</button>
     </div>
-    <div id="mc-upload-progress" style="display:none;margin-top:8px">
-      <div style="background:var(--border2);border-radius:99px;height:4px;overflow:hidden">
-        <div id="mc-progress-bar" style="height:100%;background:var(--rosa);width:0%;transition:width .3s;border-radius:99px"></div>
-      </div>
+    <div class="upload-progress" id="mc-upload-progress">
+      <div class="upload-bar-bg"><div class="upload-bar-fill" id="mc-progress-bar"></div></div>
       <div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center">Subiendo...</div>
     </div>
   </div>
-  <div class="f-row"><label>Estado</label><select id="mc-estado">
-    <option value="PENDIENTE">Pendiente</option><option value="PAGADO">Pagado</option>
-    <option value="PARCIAL">Parcial</option><option value="EN CURSO">En curso</option><option value="DEPOSITADO">Depositado</option>
-  </select></div>
-  <div class="f-row"><label>Nota / proveedor</label><input id="mc-nota" placeholder="Proveedor, referencia..."></div>
-  <div class="f-row"><label>Fecha / responsable</label><input id="mc-fecha" placeholder="DD/MM/AA · Nombre"></div>
-  <div class="modal-acts"><button class="btn-cancel" onclick="closeModal('capex')">Cancelar</button><button class="btn-save" onclick="saveCapex()">Guardar</button></div>
+  <div class="modal-acts"><button class="btn-cancel" type="button" onclick="closeModal('capex')">Cancelar</button><button class="btn-save" type="button" onclick="saveCapex()">Guardar</button></div>
 </div></div>
 
-<!-- MODAL PAGO -->
+<!-- MODAL REGISTRAR PAGO -->
 <div class="modal-bg" id="modal-pago"><div class="modal">
-  <div class="modal-title"><span id="mp-title">Pago</span> — registro</div>
+  <div class="modal-title"><span>💳 Registrar pago</span></div>
+  <div class="modal-subtitle" id="mp-concepto-label"></div>
+  <input type="hidden" id="mp-capex-id">
+  <input type="hidden" id="mp-pago-id">
   <div class="f-grid">
     <div class="f-row"><label>Fecha</label><input type="date" id="mp-fecha"></div>
     <div class="f-row"><label>Importe (€)</label><input type="number" id="mp-importe" placeholder="0.00" min="0" step="0.01"></div>
   </div>
-  <div class="f-row"><label>Concepto</label><input id="mp-concepto" placeholder="Descripción del pago"></div>
-  <div class="f-row"><label>Proveedor</label><input id="mp-proveedor" placeholder="Nombre del proveedor"></div>
   <div class="f-grid">
     <div class="f-row"><label>Responsable</label><select id="mp-resp"><option>Pablo</option><option>Estefanía</option><option>Ambos</option></select></div>
     <div class="f-row"><label>Método</label><select id="mp-metodo"><option>Transferencia</option><option>Tarjeta crédito</option><option>Tarjeta débito</option><option>Efectivo</option></select></div>
   </div>
-  <div class="f-row"><label>Categoría</label><select id="mp-cat">
-    <option value="Legal">Legal</option><option value="Local">Local</option><option value="Equipamiento">Equipamiento</option>
-    <option value="Reforma">Reforma</option><option value="Branding">Branding</option><option value="Operativo">Operativo</option>
-    <option value="Capital social ⚠">Capital social ⚠</option><option value="Otros">Otros</option>
-  </select></div>
-  <div class="modal-acts"><button class="btn-cancel" onclick="closeModal('pago')">Cancelar</button><button class="btn-save" onclick="savePago()">Registrar</button></div>
+  <div class="f-row"><label>Comprobante (foto, PDF, captura)</label>
+    <div class="upload-area" id="mp-upload-area" onclick="document.getElementById('mp-file-input').click()">
+      <div id="mp-upload-label" style="font-size:13px;color:var(--muted)">📎 Subir comprobante de pago</div>
+      <input type="file" id="mp-file-input" accept="image/*,application/pdf" style="display:none" onchange="handleUpload(this,'mp')">
+    </div>
+    <input type="hidden" id="mp-comprobante" value="">
+    <div class="upload-preview" id="mp-upload-preview">
+      <span id="mp-upload-name" style="color:var(--verde);font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button type="button" onclick="clearUpload('mp')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px">✕</button>
+    </div>
+    <div class="upload-progress" id="mp-upload-progress">
+      <div class="upload-bar-bg"><div class="upload-bar-fill" id="mp-progress-bar"></div></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;text-align:center">Subiendo...</div>
+    </div>
+  </div>
+  <div class="f-row"><label>Nota (opcional)</label><input id="mp-nota" placeholder="Referencia, factura..."></div>
+  <div class="modal-acts"><button class="btn-cancel" type="button" onclick="closeModal('pago')">Cancelar</button><button class="btn-save" type="button" onclick="savePago()">Registrar pago</button></div>
 </div></div>
 
 <!-- MODAL TAREA -->
 <div class="modal-bg" id="modal-tarea"><div class="modal">
   <div class="modal-title"><span id="mt-modal-title">Nueva tarea</span></div>
+  <div class="modal-subtitle"></div>
   <div class="f-row"><label>Título</label><input id="mt-titulo" placeholder="Qué hay que hacer..."></div>
   <div class="f-row"><label>Descripción</label><textarea id="mt-desc" rows="2" placeholder="Detalle opcional..."></textarea></div>
   <div class="f-grid">
-    <div class="f-row"><label>Estado</label>
-      <select id="mt-estado">
-        <option value="pendiente">Pendiente</option>
-        <option value="en_proceso">En proceso</option>
-        <option value="completado">Completado</option>
-      </select>
-    </div>
-    <div class="f-row"><label>Prioridad</label>
-      <select id="mt-pri">
-        <option value="alta">Alta</option>
-        <option value="media" selected>Media</option>
-        <option value="baja">Baja</option>
-      </select>
-    </div>
+    <div class="f-row"><label>Estado</label><select id="mt-estado"><option value="pendiente">Pendiente</option><option value="en_proceso">En proceso</option><option value="completado">Completado</option></select></div>
+    <div class="f-row"><label>Prioridad</label><select id="mt-pri"><option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option></select></div>
   </div>
   <div class="f-grid">
-    <div class="f-row"><label>Responsable</label>
-      <select id="mt-resp"><option>Pablo</option><option>Estefanía</option><option>Ambos</option></select>
-    </div>
-    <div class="f-row"><label>Fecha límite</label>
-      <input type="date" id="mt-fecha">
-    </div>
+    <div class="f-row"><label>Responsable</label><select id="mt-resp"><option>Pablo</option><option>Estefanía</option><option>Ambos</option></select></div>
+    <div class="f-row"><label>Fecha límite</label><input type="date" id="mt-fecha"></div>
   </div>
-  <div class="modal-acts">
-    <button class="btn-cancel" type="button" onclick="closeModal('tarea')">Cancelar</button>
-    <button class="btn-save" type="button" onclick="saveTarea()">Guardar</button>
-  </div>
+  <div class="modal-acts"><button class="btn-cancel" type="button" onclick="closeModal('tarea')">Cancelar</button><button class="btn-save" type="button" onclick="saveTarea()">Guardar</button></div>
 </div></div>
 
 <script>
+// ══════════════════════════════════════════════
+// CONSTANTS
+// ══════════════════════════════════════════════
 const CATS=['COSTES LEGALES & LOCAL','REFORMA & INTERIORISMO','EQUIPAMIENTO PRODUCTIVO','BRANDING & MARKETING INICIAL','CAPITAL OPERATIVO INICIAL'];
 const CAT_COLOR={'COSTES LEGALES & LOCAL':'#e8195a','REFORMA & INTERIORISMO':'#f97316','EQUIPAMIENTO PRODUCTIVO':'#0369a1','BRANDING & MARKETING INICIAL':'#16a34a','CAPITAL OPERATIVO INICIAL':'#7c3aed'};
-const PCAT_COLOR={Legal:'#e8195a',Local:'#f97316',Equipamiento:'#0369a1',Reforma:'#d97706',Branding:'#16a34a',Operativo:'#2563eb','Capital social ⚠':'#7c3aed',Otros:'#6b7280'};
+const CLOUD_NAME='dwdyqxmkk';
+const UPLOAD_PRESET='dopi_comprobantes';
+const STORE_KEY='dopi-v3';
+
+// ══════════════════════════════════════════════
+// DATA — capexItems ahora incluye array de pagos[]
+// ══════════════════════════════════════════════
+// Cada capexItem: { id, cat, concepto, presupuesto, estado, nota, pagos:[] }
+// Cada pago: { id, fecha, importe, responsable, metodo, comprobante, nota }
 
 let capexItems=[
-  {id:1,cat:'COSTES LEGALES & LOCAL',concepto:'Inscripción nombre mercantil (SL)',presupuesto:35,pagado:35,estado:'PAGADO',nota:'Gestoría Tomás y Nogueras',fecha:'18/03/26 · Pablo',comprobante:''},
-  {id:2,cat:'COSTES LEGALES & LOCAL',concepto:'Fianza (2 meses renta)',presupuesto:2000,pagado:2000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',fecha:'27/03/26 · Estefanía',comprobante:''},
-  {id:3,cat:'COSTES LEGALES & LOCAL',concepto:'Garantía adicional (3 meses)',presupuesto:3000,pagado:3000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',fecha:'27/03/26 · Estefanía',comprobante:''},
-  {id:4,cat:'COSTES LEGALES & LOCAL',concepto:'Comisión agencia (Conde Abogados)',presupuesto:1210,pagado:1210,estado:'PAGADO',nota:'Confirmado – ya pagado',fecha:'27/03/26 · Estefanía',comprobante:''},
-  {id:5,cat:'COSTES LEGALES & LOCAL',concepto:'1er mes de alquiler',presupuesto:1000,pagado:1020,estado:'PAGADO',nota:'Incluido en pago inicial €6.020',fecha:'27/03/26 · Estefanía',comprobante:''},
-  {id:6,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia sanitaria (alimentos)',presupuesto:null,pagado:null,estado:'PENDIENTE',nota:'—',fecha:'—',comprobante:''},
-  {id:7,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia apertura / actividad',presupuesto:400,pagado:null,estado:'PENDIENTE',nota:'Estimado – Ayuntamiento Granada',fecha:'—',comprobante:''},
-  {id:8,cat:'REFORMA & INTERIORISMO',concepto:'Informe arquitecta (Ruth Márquez)',presupuesto:null,pagado:null,estado:'EN CURSO',nota:'Arquitecta colegiada contratada',fecha:'667573598',comprobante:''},
-  {id:9,cat:'REFORMA & INTERIORISMO',concepto:'Reforma / acondicionamiento',presupuesto:1200,pagado:600,estado:'PARCIAL',nota:'Presupuesto cerrado · €600 pagado (50%)',fecha:'14/04/26 · Estefanía',comprobante:''},
-  {id:10,cat:'REFORMA & INTERIORISMO',concepto:'Señalética + rotulación exterior',presupuesto:null,pagado:null,estado:'PENDIENTE',nota:'—',fecha:'—',comprobante:''},
-  {id:11,cat:'REFORMA & INTERIORISMO',concepto:'Decoración / mobiliario',presupuesto:1500,pagado:null,estado:'PENDIENTE',nota:'Concepto visual marca',fecha:'—',comprobante:''},
-  {id:12,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Horno convección (precio real IVA inc.)',presupuesto:1175,pagado:1175,estado:'PAGADO',nota:'1 ud. confirmada · IVA incluido',fecha:'pendiente fecha',comprobante:''},
-  {id:13,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Congelador comercial ×2 (precio real IVA inc.)',presupuesto:2120,pagado:2120,estado:'PAGADO',nota:'2 uds × €1.060 IVA incluido',fecha:'pendiente fecha',comprobante:''},
-  {id:14,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Mostrador / muebles',presupuesto:1800,pagado:null,estado:'PENDIENTE',nota:'Estimado — zona despacho + muebles',fecha:'—',comprobante:''},
-  {id:15,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cafetera (precio real IVA inc.)',presupuesto:1944,pagado:1944,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha',comprobante:''},
-  {id:16,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Lavamanos (precio real IVA inc.)',presupuesto:150,pagado:150,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha',comprobante:''},
-  {id:17,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Molinillo café (precio real IVA inc.)',presupuesto:336,pagado:336,estado:'PAGADO',nota:'Precio real confirmado IVA incluido',fecha:'pendiente fecha',comprobante:''},
-  {id:18,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cristales / vitrinas',presupuesto:1000,pagado:null,estado:'PENDIENTE',nota:'Estimado — expositores y vitrinas producto',fecha:'—',comprobante:''},
-  {id:19,cat:'BRANDING & MARKETING INICIAL',concepto:'Diseño de marca (Luis Escobar)',presupuesto:604,pagado:null,estado:'PENDIENTE',nota:'Manual de marca incluido',fecha:'—',comprobante:''},
-  {id:20,cat:'BRANDING & MARKETING INICIAL',concepto:'Packaging producción inicial',presupuesto:1200,pagado:null,estado:'PENDIENTE',nota:'Cajas, sleeves 1ª tirada',fecha:'—',comprobante:''},
-  {id:21,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Aporte inicial cuenta empresa (BBVA)',presupuesto:3000,pagado:3000,estado:'DEPOSITADO',nota:'Capital social – NO es gasto',fecha:'25/03/26 · Estefanía',comprobante:''},
-  {id:22,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Inventario inicial (masa congelada+dips)',presupuesto:1200,pagado:null,estado:'PENDIENTE',nota:'Stock 2–3 semanas',fecha:'—',comprobante:''},
-  {id:23,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Fondo de maniobra (caja)',presupuesto:700,pagado:null,estado:'PENDIENTE',nota:'Efectivo disponible',fecha:'—',comprobante:''},
+  {id:1,cat:'COSTES LEGALES & LOCAL',concepto:'Inscripción nombre mercantil (SL)',presupuesto:35,estado:'PAGADO',nota:'Gestoría Tomás y Nogueras',pagos:[{id:1,fecha:'18/03/2026',importe:35,responsable:'Pablo',metodo:'Tarjeta crédito',comprobante:'',nota:''}]},
+  {id:2,cat:'COSTES LEGALES & LOCAL',concepto:'Fianza (2 meses renta)',presupuesto:2000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',pagos:[{id:1,fecha:'27/03/2026',importe:2000,responsable:'Estefanía',metodo:'Transferencia',comprobante:'',nota:'Pago conjunto €6.020'}]},
+  {id:3,cat:'COSTES LEGALES & LOCAL',concepto:'Garantía adicional (3 meses)',presupuesto:3000,estado:'PAGADO',nota:'Incluido en pago inicial alquiler €6.020',pagos:[{id:1,fecha:'27/03/2026',importe:3000,responsable:'Estefanía',metodo:'Transferencia',comprobante:'',nota:'Pago conjunto €6.020'}]},
+  {id:4,cat:'COSTES LEGALES & LOCAL',concepto:'Comisión agencia (Conde Abogados)',presupuesto:1210,estado:'PAGADO',nota:'Conde Abogados — Rosa Gutiérrez Conde',pagos:[{id:1,fecha:'27/03/2026',importe:1210,responsable:'Estefanía',metodo:'Transferencia',comprobante:'',nota:''}]},
+  {id:5,cat:'COSTES LEGALES & LOCAL',concepto:'1er mes de alquiler',presupuesto:1000,estado:'PAGADO',nota:'Incluido en pago inicial €6.020',pagos:[{id:1,fecha:'27/03/2026',importe:1020,responsable:'Estefanía',metodo:'Transferencia',comprobante:'',nota:''}]},
+  {id:6,cat:'COSTES LEGALES & LOCAL',concepto:'Revisión electricista',presupuesto:60,estado:'PAGADO',nota:'Revisión energética',pagos:[{id:1,fecha:'08/04/2026',importe:60,responsable:'Pablo',metodo:'Transferencia',comprobante:'',nota:''}]},
+  {id:7,cat:'COSTES LEGALES & LOCAL',concepto:'Papel mural',presupuesto:9,estado:'PAGADO',nota:'Minimarket',pagos:[{id:1,fecha:'06/04/2026',importe:8.50,responsable:'Estefanía',metodo:'Tarjeta crédito',comprobante:'',nota:''}]},
+  {id:8,cat:'COSTES LEGALES & LOCAL',concepto:'Guincha',presupuesto:5,estado:'PAGADO',nota:'Leroy Merlin',pagos:[{id:1,fecha:'13/04/2026',importe:4.89,responsable:'Estefanía',metodo:'Tarjeta crédito',comprobante:'',nota:''}]},
+  {id:9,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia sanitaria (alimentos)',presupuesto:null,estado:'PENDIENTE',nota:'Tramitar Ayuntamiento Granada',pagos:[],comprobante:''},
+  {id:10,cat:'COSTES LEGALES & LOCAL',concepto:'Licencia apertura / actividad',presupuesto:400,estado:'PENDIENTE',nota:'Estimado – Ayuntamiento Granada',pagos:[],comprobante:''},
+  {id:11,cat:'REFORMA & INTERIORISMO',concepto:'Informe arquitecta (Ruth Márquez)',presupuesto:null,estado:'EN CURSO',nota:'Arquitecta colegiada contratada — 667573598',pagos:[],comprobante:''},
+  {id:12,cat:'REFORMA & INTERIORISMO',concepto:'Reforma / acondicionamiento',presupuesto:1200,estado:'PARCIAL',nota:'Presupuesto cerrado',pagos:[{id:1,fecha:'14/04/2026',importe:600,responsable:'Estefanía',metodo:'Transferencia',comprobante:'',nota:'50% inicial'}]},
+  {id:13,cat:'REFORMA & INTERIORISMO',concepto:'Señalética + rotulación exterior',presupuesto:null,estado:'PENDIENTE',nota:'Pendiente presupuesto',pagos:[],comprobante:''},
+  {id:14,cat:'REFORMA & INTERIORISMO',concepto:'Decoración / mobiliario',presupuesto:1500,estado:'PENDIENTE',nota:'Concepto visual marca',pagos:[],comprobante:''},
+  {id:15,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Horno convección (IVA inc.)',presupuesto:1175,estado:'PAGADO',nota:'1 ud. confirmada',pagos:[{id:1,fecha:'—',importe:1175,responsable:'Pablo',metodo:'Transferencia',comprobante:'',nota:'Pendiente fecha exacta'}]},
+  {id:16,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Congelador comercial ×2 (IVA inc.)',presupuesto:2120,estado:'PAGADO',nota:'2 uds × €1.060',pagos:[{id:1,fecha:'—',importe:2120,responsable:'Pablo',metodo:'Transferencia',comprobante:'',nota:'Pendiente fecha exacta'}]},
+  {id:17,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cafetera (IVA inc.)',presupuesto:1944,estado:'PAGADO',nota:'Precio real confirmado',pagos:[{id:1,fecha:'—',importe:1944,responsable:'Pablo',metodo:'Transferencia',comprobante:'',nota:'Pendiente fecha exacta'}]},
+  {id:18,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Lavamanos (IVA inc.)',presupuesto:150,estado:'PAGADO',nota:'Precio real confirmado',pagos:[{id:1,fecha:'—',importe:150,responsable:'Pablo',metodo:'Transferencia',comprobante:'',nota:'Pendiente fecha exacta'}]},
+  {id:19,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Molinillo café (IVA inc.)',presupuesto:336,estado:'PAGADO',nota:'Precio real confirmado',pagos:[{id:1,fecha:'—',importe:336,responsable:'Pablo',metodo:'Transferencia',comprobante:'',nota:'Pendiente fecha exacta'}]},
+  {id:20,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Mostrador / muebles',presupuesto:1800,estado:'PENDIENTE',nota:'Estimado — zona despacho + muebles',pagos:[],comprobante:''},
+  {id:21,cat:'EQUIPAMIENTO PRODUCTIVO',concepto:'Cristales / vitrinas',presupuesto:1000,estado:'PENDIENTE',nota:'Estimado — expositores y vitrinas',pagos:[],comprobante:''},
+  {id:22,cat:'BRANDING & MARKETING INICIAL',concepto:'Diseño de marca (Luis Escobar)',presupuesto:604,estado:'PENDIENTE',nota:'Manual de marca incluido',pagos:[],comprobante:''},
+  {id:23,cat:'BRANDING & MARKETING INICIAL',concepto:'Packaging — 1ª tirada',presupuesto:1200,estado:'PENDIENTE',nota:'Cajas, sleeves 1ª tirada',pagos:[],comprobante:''},
+  {id:24,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Aporte inicial cuenta empresa (BBVA)',presupuesto:3000,estado:'DEPOSITADO',nota:'Capital social – NO es gasto operativo',pagos:[{id:1,fecha:'25/03/2026',importe:3000,responsable:'Estefanía',metodo:'Transferencia',comprobante:'',nota:'Capital social'}]},
+  {id:25,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Inventario inicial (masa congelada+dips)',presupuesto:1200,estado:'PENDIENTE',nota:'Stock 2–3 semanas',pagos:[],comprobante:''},
+  {id:26,cat:'CAPITAL OPERATIVO INICIAL',concepto:'Fondo de maniobra (caja)',presupuesto:700,estado:'PENDIENTE',nota:'Efectivo disponible',pagos:[],comprobante:''},
 ];
-let pagosItems=[
-  {id:1,fecha:'18/03/2026',concepto:'Inscripción nombre mercantil (SL)',proveedor:'Gestoría Tomás y Nogueras',responsable:'Pablo',metodo:'Tarjeta crédito',importe:35,categoria:'Legal'},
-  {id:2,fecha:'25/03/2026',concepto:'Aporte inicial cuenta empresa (capital social)',proveedor:'BBVA — María Mercedes Mata González',responsable:'Estefanía',metodo:'Transferencia',importe:3000,categoria:'Capital social ⚠'},
-  {id:3,fecha:'27/03/2026',concepto:'Pago inicial alquiler (fianza 2M + garantía 3M + 1er mes)',proveedor:'Conde Abogados — Rosa Gutiérrez Conde',responsable:'Estefanía',metodo:'Transferencia',importe:6020,categoria:'Local'},
-  {id:4,fecha:'27/03/2026',concepto:'Comisión intermediario agencia',proveedor:'Conde Abogados — Rosa Gutiérrez Conde',responsable:'Estefanía',metodo:'Transferencia',importe:1210,categoria:'Local'},
-  {id:5,fecha:'08/04/2026',concepto:'Revisión Electricista',proveedor:'Revisión energética',responsable:'Pablo',metodo:'Transferencia',importe:60,categoria:'Local'},
-  {id:6,fecha:'06/04/2026',concepto:'Papel mural',proveedor:'Minimarket',responsable:'Estefanía',metodo:'Tarjeta crédito',importe:8.50,categoria:'Local'},
-  {id:7,fecha:'13/04/2026',concepto:'Guincha',proveedor:'Leroy Merlin',responsable:'Estefanía',metodo:'Tarjeta crédito',importe:4.89,categoria:'Local'},
-  {id:8,fecha:'14/04/2026',concepto:'Reforma parcial (50% presupuesto)',proveedor:'Presupuesto reforma',responsable:'Estefanía',metodo:'Transferencia',importe:600,categoria:'Reforma'},
-  {id:9,fecha:'—',concepto:'Equipamiento (horno+congeladores+cafetera+lavamanos+molinillo)',proveedor:'Varios proveedores',responsable:'Pablo/Estefanía',metodo:'Varios',importe:5725,categoria:'Equipamiento'},
-];
+
 let tareasItems=[
   {id:1,titulo:'Cotización masa congelada con proveedor',desc:'Confirmar €/kg, unidades mínimas y lead time',prioridad:'alta',responsable:'Pablo',estado:'pendiente',fecha:''},
-  {id:2,titulo:'Confirmar fechas de pago del equipamiento',desc:'Completar columna Fecha/Resp. del CAPEX',prioridad:'media',responsable:'Ambos',estado:'pendiente',fecha:''},
+  {id:2,titulo:'Confirmar fechas de pago del equipamiento',desc:'Completar fechas exactas en CAPEX',prioridad:'media',responsable:'Ambos',estado:'pendiente',fecha:''},
   {id:3,titulo:'Cotización cristales / vitrinas',desc:'Presupuesto para expositores y vitrinas de producto',prioridad:'media',responsable:'Estefanía',estado:'pendiente',fecha:''},
   {id:4,titulo:'Pago segundo 50% reforma',desc:'€600 pendientes según presupuesto cerrado',prioridad:'alta',responsable:'Estefanía',estado:'pendiente',fecha:''},
   {id:5,titulo:'Obtener licencia sanitaria',desc:'Tramitar con Ayuntamiento de Granada',prioridad:'alta',responsable:'Ambos',estado:'pendiente',fecha:''},
   {id:6,titulo:'Licencia apertura / actividad',desc:'Estimado €400 — Ayuntamiento Granada',prioridad:'alta',responsable:'Ambos',estado:'pendiente',fecha:''},
   {id:7,titulo:'Señalética y rotulación exterior',desc:'Presupuesto pendiente — crítico para apertura',prioridad:'media',responsable:'Estefanía',estado:'pendiente',fecha:''},
-  {id:8,titulo:'Validar gramaje prototipo (~15g/fry)',desc:'Test con masa congelada real antes de fijar carta definitiva',prioridad:'alta',responsable:'Pablo',estado:'pendiente',fecha:''},
-  {id:9,titulo:'Diseño de marca con Luis Escobar',desc:'€604 pendiente de pago — manual de marca incluido',prioridad:'media',responsable:'Pablo',estado:'pendiente',fecha:''},
+  {id:8,titulo:'Validar gramaje prototipo (~15g/fry)',desc:'Test con masa congelada real',prioridad:'alta',responsable:'Pablo',estado:'pendiente',fecha:''},
+  {id:9,titulo:'Diseño de marca con Luis Escobar',desc:'€604 pendiente de pago',prioridad:'media',responsable:'Pablo',estado:'pendiente',fecha:''},
   {id:10,titulo:'Packaging — primera tirada',desc:'Cajas y sleeves DOPI para lanzamiento',prioridad:'baja',responsable:'Estefanía',estado:'pendiente',fecha:''},
   {id:11,titulo:'Inventario inicial masa congelada',desc:'Stock de 2-3 semanas para apertura',prioridad:'media',responsable:'Pablo',estado:'pendiente',fecha:''},
   {id:12,titulo:'Ficha técnica APPCC',desc:'Documento de autocontrol sanitario obligatorio',prioridad:'alta',responsable:'Ambos',estado:'pendiente',fecha:''},
 ];
-let nextCapexId=40,nextPagoId=20,nextTareaId=20,editCapexId=null,editPagoId=null,editTareaId=null;
+
+let nextCapexId=50,nextPagoId=100,nextTareaId=30;
+let editCapexId=null,editTareaId=null,activeFilter='all';
 let donutChart,barChart,lineChart;
-const STORE_KEY='dopi-data-v1';
+
+// ══════════════════════════════════════════════
+// STORAGE
+// ══════════════════════════════════════════════
 async function loadData(){try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return null;}
-async function saveData(){try{await window.storage.set(STORE_KEY,JSON.stringify({capex:capexItems,pagos:pagosItems,tareas:tareasItems}));}catch(e){}}
-const fmt=v=>(v==null||v===''||v==='—')?'—':'€'+Number(v).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+async function saveData(){try{await window.storage.set(STORE_KEY,JSON.stringify({capex:capexItems,tareas:tareasItems}));}catch(e){}}
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+const fmt=v=>(v==null||v==='')?'—':'€'+Number(v).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
 const statCls=s=>({'PAGADO':'s-pagado','PENDIENTE':'s-pendiente','PARCIAL':'s-parcial','EN CURSO':'s-curso','DEPOSITADO':'s-depositado'}[s]||'s-pendiente');
+const totalPagado=item=>item.pagos.reduce((s,p)=>s+(p.importe||0),0);
+const totalPagadoAll=()=>capexItems.reduce((s,i)=>s+totalPagado(i),0);
+const totalPresupuesto=()=>capexItems.reduce((s,i)=>s+(i.presupuesto||0),0);
+const isCapitalSocial=item=>item.concepto.toLowerCase().includes('capital social')||item.concepto.toLowerCase().includes('bbva');
+const totalPagadoExcl=()=>capexItems.filter(i=>!isCapitalSocial(i)).reduce((s,i)=>s+totalPagado(i),0);
+
+function autoEstado(item){
+  const pag=totalPagado(item);
+  const pre=item.presupuesto||0;
+  if(item.estado==='DEPOSITADO')return;
+  if(item.estado==='EN CURSO')return;
+  if(pag<=0){item.estado='PENDIENTE';}
+  else if(pre>0&&pag>=pre){item.estado='PAGADO';}
+  else if(pag>0){item.estado='PARCIAL';}
+}
+
+// ══════════════════════════════════════════════
+// KPIs + PROGRESS
+// ══════════════════════════════════════════════
 function updateKPIs(){
-  const total=capexItems.reduce((s,i)=>s+(i.presupuesto||0),0);
-  const pagado=capexItems.reduce((s,i)=>s+(i.pagado||0),0);
+  const total=totalPresupuesto();
+  const pagado=totalPagadoAll();
   const pct=total>0?Math.round((pagado/total)*100):0;
-  const realPaid=pagosItems.filter(p=>p.categoria!=='Capital social ⚠').reduce((s,p)=>s+(p.importe||0),0);
   document.getElementById('k-total').textContent=fmt(total);
   document.getElementById('k-pagado').textContent=fmt(pagado);
   document.getElementById('k-pendiente').textContent=fmt(total-pagado);
-  document.getElementById('k-pagos').textContent=fmt(realPaid);
+  document.getElementById('k-excl').textContent=fmt(totalPagadoExcl());
   document.getElementById('p-pct').textContent=pct+'%';
   document.getElementById('p-max').textContent=fmt(total);
   document.getElementById('p-bar').style.width=Math.min(pct,100)+'%';
 }
+
+// ══════════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════════
 function buildCharts(){
   const donutData=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.presupuesto||0),0));
   const dCtx=document.getElementById('chart-donut').getContext('2d');
   if(donutChart)donutChart.destroy();
-  donutChart=new Chart(dCtx,{type:'doughnut',data:{labels:CATS.map(c=>c.split(' ').slice(0,2).join(' ')),datasets:[{data:donutData,backgroundColor:CATS.map(c=>CAT_COLOR[c]),borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'right',labels:{font:{size:10,family:'Plus Jakarta Sans'},padding:8,usePointStyle:true,pointStyleWidth:8,boxHeight:8}},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}}}});
-  const bPaid=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.pagado||0),0));
-  const bPend=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.presupuesto||0)-(i.pagado||0),0));
+  donutChart=new Chart(dCtx,{type:'doughnut',data:{labels:CATS.map(c=>c.split(' ').slice(0,2).join(' ')),datasets:[{data:donutData,backgroundColor:CATS.map(c=>CAT_COLOR[c]),borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'right',labels:{font:{size:10,family:'Plus Jakarta Sans'},padding:8,usePointStyle:true,pointStyleWidth:8,boxHeight:8}},tooltip:{callbacks:{label:ctx=>' '+fmt(ctx.raw)}}}}});
+
+  const bPaid=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+totalPagado(i),0));
+  const bPend=CATS.map(c=>capexItems.filter(i=>i.cat===c).reduce((s,i)=>s+(i.presupuesto||0)-totalPagado(i),0).toFixed(0)*1);
   const bCtx=document.getElementById('chart-bar').getContext('2d');
   if(barChart)barChart.destroy();
-  barChart=new Chart(bCtx,{type:'bar',data:{labels:CATS.map(c=>c.split('&')[0].trim().split(' ').slice(0,2).join(' ')),datasets:[{label:'Pagado',data:bPaid,backgroundColor:'#16a34a',borderRadius:4},{label:'Pendiente',data:bPend,backgroundColor:'#fed7aa',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10,family:'Plus Jakarta Sans'},padding:8,usePointStyle:true,pointStyleWidth:8,boxHeight:8}}},scales:{x:{stacked:true,ticks:{font:{size:9},maxRotation:30}},y:{stacked:true,ticks:{font:{size:9,family:'JetBrains Mono'},callback:v=>'€'+v.toLocaleString('es-ES')}}}}});
-  const sorted=[...pagosItems].filter(p=>p.fecha!=='—'&&p.categoria!=='Capital social ⚠').sort((a,b)=>a.fecha.localeCompare(b.fecha));
-  let cum=0;const ld=sorted.map(p=>{cum+=p.importe;return{x:p.fecha,y:cum}});
+  barChart=new Chart(bCtx,{type:'bar',data:{labels:CATS.map(c=>c.split('&')[0].trim().split(' ').slice(0,2).join(' ')),datasets:[{label:'Pagado',data:bPaid,backgroundColor:'#16a34a',borderRadius:4},{label:'Pendiente',data:bPend,backgroundColor:'#fed7aa',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{font:{size:10,family:'Plus Jakarta Sans'},padding:8,usePointStyle:true,pointStyleWidth:8,boxHeight:8}}},scales:{x:{stacked:true,ticks:{font:{size:9},maxRotation:30}},y:{stacked:true,ticks:{font:{size:9,family:'JetBrains Mono'},callback:v=>'€'+Math.round(v).toLocaleString('es-ES')}}}}});
+
+  const allPagos=[];
+  capexItems.forEach(item=>item.pagos.forEach(p=>{if(p.fecha&&p.fecha!=='—')allPagos.push({fecha:p.fecha,importe:p.importe,cap:!isCapitalSocial(item)});}));
+  const sorted=allPagos.filter(p=>p.cap).sort((a,b)=>a.fecha.localeCompare(b.fecha));
+  let cum=0;const ld=sorted.map(p=>{cum+=p.importe;return{x:p.fecha,y:Math.round(cum)};});
   if(ld.length)ld.unshift({x:'01/03/2026',y:0});
   const lCtx=document.getElementById('chart-line').getContext('2d');
   if(lineChart)lineChart.destroy();
-  lineChart=new Chart(lCtx,{type:'line',data:{labels:ld.map(d=>d.x),datasets:[{label:'Inversión acumulada',data:ld.map(d=>d.y),borderColor:'#e8195a',backgroundColor:'rgba(232,25,90,0.07)',fill:true,tension:0.3,pointRadius:4,pointBackgroundColor:'#e8195a',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9},maxRotation:30}},y:{ticks:{font:{size:9,family:'JetBrains Mono'},callback:v=>'€'+v.toLocaleString('es-ES')}}}}});
+  lineChart=new Chart(lCtx,{type:'line',data:{labels:ld.map(d=>d.x),datasets:[{label:'Acumulado',data:ld.map(d=>d.y),borderColor:'#e8195a',backgroundColor:'rgba(232,25,90,0.07)',fill:true,tension:0.3,pointRadius:4,pointBackgroundColor:'#e8195a',borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9},maxRotation:30}},y:{ticks:{font:{size:9,family:'JetBrains Mono'},callback:v=>'€'+Math.round(v).toLocaleString('es-ES')}}}}});
 }
+
+// ══════════════════════════════════════════════
+// SUMMARY PILLS
+// ══════════════════════════════════════════════
 function renderSummary(){
   const s={PAGADO:0,PENDIENTE:0,PARCIAL:0,'EN CURSO':0,DEPOSITADO:0};
   capexItems.forEach(i=>s[i.estado]=(s[i.estado]||0)+1);
   document.getElementById('summary-pills').innerHTML=
     `<span class="spill"><span class="dot" style="background:#16a34a"></span>${s.PAGADO} pagados</span>`+
-    (s.PARCIAL?`<span class="spill"><span class="dot" style="background:#d97706"></span>${s.PARCIAL} parcial</span>`:'')+
+    (s.PARCIAL?`<span class="spill"><span class="dot" style="background:#d97706"></span>${s.PARCIAL} parciales</span>`:'')+
     (s['EN CURSO']?`<span class="spill"><span class="dot" style="background:#2563eb"></span>${s['EN CURSO']} en curso</span>`:'')+
     `<span class="spill"><span class="dot" style="background:#f97316"></span>${s.PENDIENTE} pendientes</span>`+
     (s.DEPOSITADO?`<span class="spill"><span class="dot" style="background:#7c3aed"></span>${s.DEPOSITADO} depositado</span>`:'');
 }
+
+// ══════════════════════════════════════════════
+// RENDER CAPEX
+// ══════════════════════════════════════════════
 function statusSelect(item){
-  return`<select class="status-sel ${statCls(item.estado)}" onchange="changeCapexStatus(${item.id},this.value)">
+  return`<select class="status-sel ${statCls(item.estado)}" onchange="changeEstado(${item.id},this.value)">
     <option value="PENDIENTE"${item.estado==='PENDIENTE'?' selected':''}>PENDIENTE</option>
     <option value="PAGADO"${item.estado==='PAGADO'?' selected':''}>PAGADO</option>
     <option value="PARCIAL"${item.estado==='PARCIAL'?' selected':''}>PARCIAL</option>
@@ -439,83 +530,293 @@ function statusSelect(item){
     <option value="DEPOSITADO"${item.estado==='DEPOSITADO'?' selected':''}>DEPOSITADO</option>
   </select>`;
 }
+
+function progressBar(item){
+  const pag=totalPagado(item);
+  const pre=item.presupuesto||0;
+  const pct=pre>0?Math.min(100,Math.round((pag/pre)*100)):0;
+  const col=pct>=100?'#16a34a':pct>0?'#f97316':'#e8e8e3';
+  return`<div style="display:flex;align-items:center;gap:8px">
+    <div class="item-bar-bg"><div class="item-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+    <span style="font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0">${fmt(pag)} / ${fmt(pre)}</span>
+  </div>`;
+}
+
+function pagosChips(item){
+  if(!item.pagos.length)return'<span style="font-size:11px;color:var(--faint)">Sin pagos registrados</span>';
+  return item.pagos.map((p,i)=>`<div class="pago-chip">
+    <span class="pago-chip-fecha">${p.fecha}</span>
+    <span class="pago-chip-importe">${fmt(p.importe)}</span>
+    <span class="pago-chip-metodo">${p.responsable} · ${p.metodo}</span>
+    ${p.comprobante?`<a href="${p.comprobante}" target="_blank" class="comp-link" style="padding:2px 6px;font-size:10px">${p.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'}</a>`:''}
+    <button class="pago-chip-del" onclick="deletePagoFromItem(${item.id},${i})" title="Eliminar pago">✕</button>
+  </div>`).join('');
+}
+
 function renderCapex(){
   const cont=document.getElementById('capex-tables');cont.innerHTML='';
   CATS.forEach(cat=>{
     const items=capexItems.filter(i=>i.cat===cat);if(!items.length)return;
-    const catTotal=items.reduce((s,i)=>s+(i.presupuesto||0),0);
-    const catPagado=items.reduce((s,i)=>s+(i.pagado||0),0);
+    const catPres=items.reduce((s,i)=>s+(i.presupuesto||0),0);
+    const catPag=items.reduce((s,i)=>s+totalPagado(i),0);
     const color=CAT_COLOR[cat];
 
-    /* ── Desktop table ── */
+    // Desktop rows
     const desktopRows=items.map(item=>`<tr>
       <td class="bold"><span class="dot" style="background:${color};margin-right:7px"></span>${item.concepto}</td>
-      <td class="r">${fmt(item.presupuesto)}</td>
-      <td class="r" style="color:${item.pagado?'#16a34a':'var(--faint)'}">${fmt(item.pagado)}</td>
-      <td class="r" style="color:${item.presupuesto&&item.pagado?'#f97316':'var(--faint)'}">${fmt((item.presupuesto||0)-(item.pagado||0)>0?(item.presupuesto||0)-(item.pagado||0):null)}</td>
+      <td style="min-width:200px">${progressBar(item)}</td>
       <td>${statusSelect(item)}</td>
-      <td class="sm">${item.nota}</td>
-      <td class="sm">${item.comprobante?`<a href="${item.comprobante}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(--azul);text-decoration:none;font-size:11px;font-weight:600;padding:3px 8px;background:var(--azul-soft);border-radius:6px">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:'<span style="color:var(--faint);font-size:11px">—</span>'}</td>
-      <td><div class="acts"><button class="btn-ic" onclick="editCapexItem(${item.id})">✏</button><button class="btn-ic del" onclick="deleteCapex(${item.id})">✕</button></div></td>
+      <td class="sm" style="max-width:160px">${item.nota}</td>
+      <td style="white-space:nowrap">
+        ${item.comprobante?`<a href="${item.comprobante}" target="_blank" class="comp-link">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:'<span style="color:var(--faint);font-size:11px">—</span>'}
+      </td>
+      <td>
+        <div class="acts">
+          <button class="btn-ic pay" onclick="openPago(${item.id})" title="Registrar pago">💳</button>
+          <button class="btn-ic" onclick="openCapexEdit(${item.id})" title="Editar">✏</button>
+          <button class="btn-ic del" onclick="deleteCapex(${item.id})" title="Eliminar">✕</button>
+        </div>
+      </td>
+    </tr>
+    <tr style="background:var(--surface)">
+      <td colspan="5" style="padding:6px 13px 10px 28px">
+        <div class="pagos-list">${pagosChips(item)}</div>
+      </td>
     </tr>`).join('');
 
-    /* ── Mobile cards ── */
+    // Mobile cards
     const mobileCards=items.map(item=>`<div class="item-card">
       <div class="item-card-top">
         <span class="item-card-name"><span class="dot" style="background:${color};margin-right:7px"></span>${item.concepto}</span>
-        <div class="acts" style="flex-shrink:0"><button class="btn-ic" onclick="editCapexItem(${item.id})">✏</button><button class="btn-ic del" onclick="deleteCapex(${item.id})">✕</button></div>
+        <div class="acts">
+          <button class="btn-ic pay" onclick="openPago(${item.id})">💳</button>
+          <button class="btn-ic" onclick="openCapexEdit(${item.id})">✏</button>
+          <button class="btn-ic del" onclick="deleteCapex(${item.id})">✕</button>
+        </div>
       </div>
       <div class="item-card-amounts">
-        <div class="item-card-amount"><div class="item-card-amount-label">Presupuesto</div><div class="item-card-amount-val">${fmt(item.presupuesto)}</div></div>
-        <div class="item-card-amount"><div class="item-card-amount-label">Pagado</div><div class="item-card-amount-val pagado">${fmt(item.pagado)}</div></div>
-        <div class="item-card-amount"><div class="item-card-amount-label">Pendiente</div><div class="item-card-amount-val" style="color:${(item.presupuesto||0)-(item.pagado||0)>0?'var(--naranja)':'var(--faint)'}">${(item.presupuesto&&(item.presupuesto-( item.pagado||0))>0)?fmt(item.presupuesto-(item.pagado||0)):'—'}</div></div>
+        <div class="item-card-amount"><div class="ica-label">Presupuesto</div><div class="ica-val">${fmt(item.presupuesto)}</div></div>
+        <div class="item-card-amount"><div class="ica-label">Pagado</div><div class="ica-val pagado">${fmt(totalPagado(item))}</div></div>
+        <div class="item-card-amount"><div class="ica-label">Pendiente</div><div class="ica-val" style="color:${(item.presupuesto||0)-totalPagado(item)>0?'var(--naranja)':'var(--faint)'}">${(item.presupuesto&&(item.presupuesto-totalPagado(item))>0)?fmt(item.presupuesto-totalPagado(item)):'—'}</div></div>
       </div>
+      <div style="margin-bottom:8px">${progressBar(item)}</div>
       <div class="item-card-bottom">
         ${statusSelect(item)}
-        ${item.comprobante?`<a href="${item.comprobante}" target="_blank" style="display:inline-flex;align-items:center;gap:5px;color:var(--azul);font-size:12px;font-weight:600;text-decoration:none;flex-shrink:0;padding:4px 10px;background:var(--azul-soft);border-radius:7px">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver comprobante</a>`:'<span style="color:var(--faint);font-size:11px">Sin comprobante</span>'}
+        <span style="font-size:11px;color:var(--muted);flex:1">${item.nota}</span>
+        ${item.comprobante?`<a href="${item.comprobante}" target="_blank" class="comp-link" style="flex-shrink:0">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:''}
       </div>
-      ${item.nota&&item.nota!=='—'?`<div style="margin-top:8px;font-size:11px;color:var(--muted);padding-top:8px;border-top:1px solid var(--border2)">${item.nota}</div>`:''}
+      <div class="pagos-list" style="margin-top:8px">${pagosChips(item)}</div>
     </div>`).join('');
 
     cont.innerHTML+=`<div class="tbl-wrap">
       <div class="cat-hd">
         <span class="cat-nm"><span class="dot" style="background:${color}"></span>${cat}</span>
-        <span class="cat-totals">${fmt(catTotal)} · ${fmt(catPagado)} pagado</span>
+        <span class="cat-totals">${fmt(catPag)} / ${fmt(catPres)} presupuestado</span>
       </div>
       <div class="desktop-table"><div class="tbl-scroll"><table><thead><tr>
-        <th>Concepto</th><th class="r">Presupuesto</th>
-        <th class="r">Pagado</th><th class="r">Pendiente</th>
-        <th>Estado</th><th>Nota</th><th>Comprobante</th><th style="width:70px"></th>
+        <th>Concepto</th><th style="min-width:220px">Progreso</th><th>Estado</th><th>Nota</th><th>Presupuesto</th><th style="width:110px"></th>
       </tr></thead><tbody>${desktopRows}</tbody></table></div></div>
       <div class="mobile-cards" style="padding:12px">${mobileCards}</div>
     </div>`;
   });
   updateKPIs();renderSummary();buildCharts();
 }
-function changeCapexStatus(id,val){
+
+function changeEstado(id,val){
   const item=capexItems.find(i=>i.id===id);if(!item)return;
-  item.estado=val;event.target.className='status-sel '+statCls(val);
-  saveData();renderSummary();updateKPIs();buildCharts();
+  item.estado=val;
+  event.target.className='status-sel '+statCls(val);
+  saveData();updateKPIs();renderSummary();buildCharts();
 }
+
+// ══════════════════════════════════════════════
+// RENDER PAGOS (vista desde CAPEX)
+// ══════════════════════════════════════════════
 function renderPagos(){
   const tbody=document.getElementById('pagos-body');
-  const sorted=[...pagosItems].sort((a,b)=>{if(a.fecha==='—')return 1;if(b.fecha==='—')return -1;return b.fecha.localeCompare(a.fecha);});
-  const totalReal=pagosItems.filter(p=>p.categoria!=='Capital social ⚠').reduce((s,p)=>s+(p.importe||0),0);
-  const totalAll=pagosItems.reduce((s,p)=>s+(p.importe||0),0);
-  document.getElementById('pagos-label').textContent=`${fmt(totalReal)} real · ${fmt(totalAll)} total`;
-  document.getElementById('k-pagos').textContent=fmt(totalReal);
-  tbody.innerHTML=sorted.map(p=>{const c=PCAT_COLOR[p.categoria]||'#6b7280';return`<tr>
-    <td class="sm mono">${p.fecha}</td><td class="bold">${p.concepto}</td>
-    <td class="sm">${p.proveedor}</td><td class="sm">${p.responsable}</td><td class="sm">${p.metodo}</td>
-    <td><span class="badge" style="background:${c}18;color:${c}">${p.categoria}</span></td>
-    <td class="r bold" style="color:${p.categoria==='Capital social ⚠'?'#7c3aed':'var(--text)'}">${fmt(p.importe)}</td>
-    <td><div class="acts"><button class="btn-ic" onclick="editPagoItem(${p.id})">✏</button><button class="btn-ic del" onclick="deletePago(${p.id})">✕</button></div></td>
-  </tr>`;}).join('')+`<tr class="tot-row"><td colspan="6" class="bold">TOTAL (excl. capital social)</td><td class="r" style="color:#16a34a">${fmt(totalReal)}</td><td></td></tr>`;
+  const allPagos=[];
+  capexItems.forEach(item=>{
+    item.pagos.forEach(p=>{
+      allPagos.push({...p, concepto:item.concepto, cat:item.cat, esCapital:isCapitalSocial(item)});
+    });
+  });
+  allPagos.sort((a,b)=>{if(a.fecha==='—')return 1;if(b.fecha==='—')return -1;return b.fecha.localeCompare(a.fecha);});
+  const totalReal=allPagos.filter(p=>!p.esCapital).reduce((s,p)=>s+(p.importe||0),0);
+  const totalTodo=allPagos.reduce((s,p)=>s+(p.importe||0),0);
+  document.getElementById('pagos-label').textContent=`${fmt(totalReal)} gasto real · ${fmt(totalTodo)} total`;
+  const c=(cat)=>({'COSTES LEGALES & LOCAL':'#e8195a','REFORMA & INTERIORISMO':'#f97316','EQUIPAMIENTO PRODUCTIVO':'#0369a1','BRANDING & MARKETING INICIAL':'#16a34a','CAPITAL OPERATIVO INICIAL':'#7c3aed'}[cat]||'#6b7280');
+  tbody.innerHTML=allPagos.map(p=>`<tr>
+    <td class="sm mono">${p.fecha}</td>
+    <td class="bold">${p.concepto}</td>
+    <td><span class="badge" style="background:${c(p.cat)}18;color:${c(p.cat)}">${p.cat.split(' ')[0]}</span></td>
+    <td class="sm">${p.responsable}</td>
+    <td class="sm">${p.metodo}</td>
+    <td class="r bold" style="color:${p.esCapital?'#7c3aed':'var(--text)'}">${fmt(p.importe)}</td>
+    <td>${p.comprobante?`<a href="${p.comprobante}" target="_blank" class="comp-link">${p.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:'<span style="color:var(--faint);font-size:11px">—</span>'}</td>
+  </tr>`).join('')+`<tr class="tot-row">
+    <td colspan="5">TOTAL excl. capital social</td>
+    <td class="r" style="color:#16a34a">${fmt(totalReal)}</td><td></td>
+  </tr>`;
 }
+
+// ══════════════════════════════════════════════
+// CAPEX MODAL
+// ══════════════════════════════════════════════
+function openCapex(){
+  editCapexId=null;
+  document.getElementById('mc-title').textContent='Nuevo item';
+  document.getElementById('mc-subtitle').textContent='';
+  ['mc-concepto','mc-nota'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mc-presupuesto').value='';
+  document.getElementById('mc-cat').selectedIndex=0;
+  document.getElementById('mc-estado').selectedIndex=0;
+  clearUpload('mc');
+  document.getElementById('modal-capex').classList.add('open');
+}
+function openCapexEdit(id){
+  const item=capexItems.find(i=>i.id===id);if(!item)return;
+  editCapexId=id;
+  document.getElementById('mc-title').textContent='Editar';
+  document.getElementById('mc-subtitle').textContent=item.concepto;
+  document.getElementById('mc-concepto').value=item.concepto;
+  document.getElementById('mc-cat').value=item.cat;
+  document.getElementById('mc-presupuesto').value=item.presupuesto||'';
+  document.getElementById('mc-estado').value=item.estado;
+  document.getElementById('mc-nota').value=item.nota||'';
+  const url=item.comprobante||'';
+  if(url){
+    document.getElementById('mc-comprobante').value=url;
+    const short=url.split('/').pop().split('?')[0];
+    document.getElementById('mc-upload-name').textContent='✓ '+(short.length>40?short.substring(0,37)+'...':short);
+    document.getElementById('mc-upload-preview').style.display='flex';
+    document.getElementById('mc-upload-label').textContent='📎 Toca para cambiar';
+    document.getElementById('mc-upload-area').style.borderColor='var(--verde)';
+  } else {
+    clearUpload('mc');
+  }
+  document.getElementById('modal-capex').classList.add('open');
+}
+function saveCapex(){
+  const concepto=document.getElementById('mc-concepto').value.trim();
+  if(!concepto){alert('Escribe el concepto');return;}
+  const item={
+    id:editCapexId||nextCapexId++,
+    cat:document.getElementById('mc-cat').value,
+    concepto,
+    presupuesto:parseFloat(document.getElementById('mc-presupuesto').value)||null,
+    estado:document.getElementById('mc-estado').value,
+    nota:document.getElementById('mc-nota').value||'',
+    comprobante:document.getElementById('mc-comprobante').value||'',
+    pagos:editCapexId?(capexItems.find(i=>i.id===editCapexId)||{pagos:[]}).pagos:[],
+  };
+  if(editCapexId){const idx=capexItems.findIndex(i=>i.id===editCapexId);capexItems[idx]=item;}
+  else capexItems.push(item);
+  editCapexId=null;closeModal('capex');saveData();renderCapex();
+}
+function deleteCapex(id){
+  if(!confirm('¿Eliminar este item y todos sus pagos?'))return;
+  capexItems=capexItems.filter(i=>i.id!==id);
+  saveData();renderCapex();
+}
+
+// ══════════════════════════════════════════════
+// PAGO MODAL
+// ══════════════════════════════════════════════
+function openPago(capexId){
+  document.getElementById('mp-capex-id').value=capexId;
+  document.getElementById('mp-pago-id').value='';
+  const item=capexItems.find(i=>i.id===capexId);
+  document.getElementById('mp-concepto-label').textContent=item?item.concepto:'';
+  ['mp-nota'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mp-fecha').value='';
+  document.getElementById('mp-importe').value='';
+  document.getElementById('mp-resp').selectedIndex=0;
+  document.getElementById('mp-metodo').selectedIndex=0;
+  clearUpload('mp');
+  document.getElementById('modal-pago').classList.add('open');
+}
+function savePago(){
+  const capexId=parseInt(document.getElementById('mp-capex-id').value);
+  const importe=parseFloat(document.getElementById('mp-importe').value);
+  if(!importe){alert('Escribe el importe');return;}
+  const rawFecha=document.getElementById('mp-fecha').value;
+  let fecha='—';
+  if(rawFecha){const d=new Date(rawFecha);fecha=d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});}
+  const item=capexItems.find(i=>i.id===capexId);
+  if(!item)return;
+  const pago={
+    id:nextPagoId++, fecha, importe,
+    responsable:document.getElementById('mp-resp').value,
+    metodo:document.getElementById('mp-metodo').value,
+    comprobante:document.getElementById('mp-comprobante').value||'',
+    nota:document.getElementById('mp-nota').value||'',
+  };
+  item.pagos.push(pago);
+  autoEstado(item);
+  closeModal('pago');saveData();renderCapex();renderPagos();
+}
+function deletePagoFromItem(capexId,pagoIdx){
+  if(!confirm('¿Eliminar este pago?'))return;
+  const item=capexItems.find(i=>i.id===capexId);
+  if(!item)return;
+  item.pagos.splice(pagoIdx,1);
+  autoEstado(item);
+  saveData();renderCapex();renderPagos();
+}
+
+// ══════════════════════════════════════════════
+// CLOUDINARY UPLOAD (shared)
+// ══════════════════════════════════════════════
+async function handleUpload(input,prefix){
+  const file=input.files[0];if(!file)return;
+  document.getElementById(prefix+'-upload-progress').style.display='block';
+  document.getElementById(prefix+'-upload-preview').style.display='none';
+  document.getElementById(prefix+'-upload-label').textContent='Subiendo...';
+  const formData=new FormData();
+  formData.append('file',file);
+  formData.append('upload_preset',UPLOAD_PRESET);
+  formData.append('folder','dopi');
+  let prog=0;
+  const bar=document.getElementById(prefix+'-progress-bar');
+  const iv=setInterval(()=>{prog=Math.min(prog+8,85);bar.style.width=prog+'%';},200);
+  try{
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{method:'POST',body:formData});
+    const data=await res.json();clearInterval(iv);
+    if(data.secure_url){
+      bar.style.width='100%';
+      setTimeout(()=>{
+        document.getElementById(prefix+'-upload-progress').style.display='none';
+        document.getElementById(prefix+'-comprobante').value=data.secure_url;
+        const name=file.name.length>40?file.name.substring(0,37)+'...':file.name;
+        document.getElementById(prefix+'-upload-name').textContent='✓ '+name;
+        const prev=document.getElementById(prefix+'-upload-preview');
+        prev.style.display='flex';
+        document.getElementById(prefix+'-upload-label').textContent='📎 Toca para cambiar';
+        document.getElementById(prefix+'-upload-area').style.borderColor='var(--verde)';
+      },400);
+    }else throw new Error(data.error?.message||'Error');
+  }catch(e){
+    clearInterval(iv);
+    document.getElementById(prefix+'-upload-progress').style.display='none';
+    document.getElementById(prefix+'-upload-label').textContent='📎 Subir comprobante de pago';
+    alert('Error al subir: '+e.message+'\n\nVerifica que el upload preset "dopi_comprobantes" esté creado en Cloudinary como "Sin firmar".');
+  }
+  input.value='';
+}
+function clearUpload(prefix){
+  document.getElementById(prefix+'-comprobante').value='';
+  document.getElementById(prefix+'-upload-preview').style.display='none';
+  document.getElementById(prefix+'-upload-label').textContent='📎 Subir comprobante de pago';
+  const area=document.getElementById(prefix+'-upload-area');
+  if(area){area.style.borderColor='var(--border)';area.style.background='var(--bg)';}
+}
+
+// ══════════════════════════════════════════════
+// TAREAS
+// ══════════════════════════════════════════════
 const ESTADO_LABEL={pendiente:'Pendiente',en_proceso:'En proceso',completado:'Completado'};
 const ESTADO_ORDER={pendiente:0,en_proceso:1,completado:2};
 const PRI_ORDER={alta:0,media:1,baja:2};
-let activeFilter='all';
 
 function setFilter(f,btn){
   activeFilter=f;
@@ -523,61 +824,35 @@ function setFilter(f,btn){
   btn.classList.add('active');
   renderTareas();
 }
-
 function fechaLabel(fecha){
-  if(!fecha)return'';
+  if(!fecha)return null;
   const hoy=new Date();hoy.setHours(0,0,0,0);
   const d=new Date(fecha);d.setHours(0,0,0,0);
   const diff=Math.round((d-hoy)/(1000*60*60*24));
-  if(diff<0)return{text:'Vencida hace '+ Math.abs(diff)+'d',cls:'urgente'};
+  if(diff<0)return{text:'Vencida hace '+Math.abs(diff)+'d',cls:'urgente'};
   if(diff===0)return{text:'Vence hoy',cls:'urgente'};
   if(diff<=3)return{text:'En '+diff+'d',cls:'pronto'};
   if(diff<=7)return{text:'Esta semana',cls:'pronto'};
   return{text:d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'}),cls:''};
 }
-
 function renderTareas(){
   const list=document.getElementById('tareas-list');
   const completadas=tareasItems.filter(t=>(t.estado||'pendiente')==='completado').length;
   const enProceso=tareasItems.filter(t=>(t.estado||'pendiente')==='en_proceso').length;
   document.getElementById('tareas-count').textContent=`${completadas} completadas · ${enProceso} en proceso`;
-
-  // Filter
   let items=[...tareasItems];
-  if(activeFilter==='alta'||activeFilter==='media'||activeFilter==='baja'){
-    items=items.filter(t=>t.prioridad===activeFilter);
-  } else if(activeFilter==='pendiente'||activeFilter==='en_proceso'||activeFilter==='completado'){
-    items=items.filter(t=>(t.estado||'pendiente')===activeFilter);
-  }
-
-  // Sort
+  if(['alta','media','baja'].includes(activeFilter))items=items.filter(t=>t.prioridad===activeFilter);
+  else if(['pendiente','en_proceso','completado'].includes(activeFilter))items=items.filter(t=>(t.estado||'pendiente')===activeFilter);
   const sortBy=document.getElementById('tareas-sort')?.value||'estado';
-  if(sortBy==='estado'){
-    items.sort((a,b)=>ESTADO_ORDER[a.estado||'pendiente']-ESTADO_ORDER[b.estado||'pendiente']);
-  } else if(sortBy==='fecha'){
-    items.sort((a,b)=>{
-      if(!a.fecha&&!b.fecha)return 0;
-      if(!a.fecha)return 1;
-      if(!b.fecha)return -1;
-      return new Date(a.fecha)-new Date(b.fecha);
-    });
-  } else if(sortBy==='prioridad'){
-    items.sort((a,b)=>PRI_ORDER[a.prioridad]-PRI_ORDER[b.prioridad]);
-  }
-
-  if(!items.length){
-    list.innerHTML=`<div style="text-align:center;padding:32px;color:var(--faint);font-size:14px">Sin tareas con este filtro</div><button class="btn-tarea-add" onclick="openTarea()">+ Nueva tarea</button>`;
-    return;
-  }
-
+  if(sortBy==='estado')items.sort((a,b)=>ESTADO_ORDER[a.estado||'pendiente']-ESTADO_ORDER[b.estado||'pendiente']);
+  else if(sortBy==='fecha')items.sort((a,b)=>{if(!a.fecha&&!b.fecha)return 0;if(!a.fecha)return 1;if(!b.fecha)return -1;return new Date(a.fecha)-new Date(b.fecha);});
+  else if(sortBy==='prioridad')items.sort((a,b)=>PRI_ORDER[a.prioridad]-PRI_ORDER[b.prioridad]);
+  if(!items.length){list.innerHTML=`<div style="text-align:center;padding:32px;color:var(--faint);font-size:14px">Sin tareas con este filtro</div><button class="btn-tarea-add" onclick="openTarea()">+ Nueva tarea</button>`;return;}
   list.innerHTML=items.map(t=>{
-    const est=t.estado||'pendiente';
-    const isDone=est==='completado';
+    const est=t.estado||'pendiente';const isDone=est==='completado';
     const fl=t.fecha?fechaLabel(t.fecha):null;
-    return`<div class="tarea${isDone?' done':''}" style="cursor:default">
-      <div class="tarea-check" onclick="cycleEstado(${t.id})" style="cursor:pointer" title="Cambiar estado">
-        <span class="tarea-check-mark">✓</span>
-      </div>
+    return`<div class="tarea${isDone?' done':''}">
+      <div class="tarea-check" onclick="cycleEstado(${t.id})" title="Cambiar estado"><span class="t-check-mark">✓</span></div>
       <div class="tarea-body">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
           <div class="tarea-title">${t.titulo}</div>
@@ -598,27 +873,12 @@ function renderTareas(){
   }).join('')+`<button class="btn-tarea-add" onclick="openTarea()">+ Nueva tarea</button>`;
 }
 function cycleEstado(id){
-  const t=tareasItems.find(i=>i.id===id);
-  if(!t)return;
+  const t=tareasItems.find(i=>i.id===id);if(!t)return;
   const order=['pendiente','en_proceso','completado'];
   const cur=order.indexOf(t.estado||'pendiente');
   t.estado=order[(cur+1)%3];
   saveData();renderTareas();
 }
-
-function switchTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));event.target.classList.add('active');
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById('panel-'+tab).classList.add('active');
-  if(tab==='pagos')renderPagos();if(tab==='tareas')renderTareas();
-}
-function openCapex(){editCapexId=null;document.getElementById('mc-title').textContent='Nuevo';['mc-concepto','mc-nota','mc-fecha'].forEach(id=>document.getElementById(id).value='');['mc-presupuesto','mc-pagado'].forEach(id=>document.getElementById(id).value='');document.getElementById('mc-cat').selectedIndex=0;document.getElementById('mc-estado').selectedIndex=0;clearUpload();document.getElementById('modal-capex').classList.add('open');}
-function editCapexItem(id){const item=capexItems.find(i=>i.id===id);if(!item)return;editCapexId=id;document.getElementById('mc-title').textContent='Editar';document.getElementById('mc-concepto').value=item.concepto;document.getElementById('mc-cat').value=item.cat;document.getElementById('mc-presupuesto').value=item.presupuesto||'';document.getElementById('mc-pagado').value=item.pagado||'';document.getElementById('mc-estado').value=item.estado;document.getElementById('mc-nota').value=item.nota==='—'?'':item.nota;document.getElementById('mc-fecha').value=item.fecha==='—'?'':item.fecha;resetUploadWidget(item.comprobante||'');document.getElementById('modal-capex').classList.add('open');}
-function saveCapex(){const concepto=document.getElementById('mc-concepto').value.trim();if(!concepto){alert('Escribe el concepto');return;}const item={id:editCapexId||nextCapexId++,cat:document.getElementById('mc-cat').value,concepto,presupuesto:parseFloat(document.getElementById('mc-presupuesto').value)||null,pagado:parseFloat(document.getElementById('mc-pagado').value)||null,estado:document.getElementById('mc-estado').value,nota:document.getElementById('mc-nota').value||'—',fecha:document.getElementById('mc-fecha').value||'—',comprobante:document.getElementById('mc-comprobante').value.trim()||''};if(editCapexId){const idx=capexItems.findIndex(i=>i.id===editCapexId);capexItems[idx]=item;}else capexItems.push(item);closeModal('capex');saveData();renderCapex();}
-function deleteCapex(id){if(!confirm('¿Eliminar?'))return;capexItems=capexItems.filter(i=>i.id!==id);saveData();renderCapex();}
-function openPago(){editPagoId=null;document.getElementById('mp-title').textContent='Nuevo';['mp-fecha','mp-concepto','mp-proveedor'].forEach(id=>document.getElementById(id).value='');document.getElementById('mp-importe').value='';document.getElementById('mp-resp').selectedIndex=0;document.getElementById('mp-metodo').selectedIndex=0;document.getElementById('mp-cat').selectedIndex=0;document.getElementById('modal-pago').classList.add('open');}
-function editPagoItem(id){const p=pagosItems.find(i=>i.id===id);if(!p)return;editPagoId=id;document.getElementById('mp-title').textContent='Editar';document.getElementById('mp-concepto').value=p.concepto;document.getElementById('mp-proveedor').value=p.proveedor==='—'?'':p.proveedor;document.getElementById('mp-importe').value=p.importe;document.getElementById('mp-resp').value=p.responsable;document.getElementById('mp-metodo').value=p.metodo;document.getElementById('mp-cat').value=p.categoria;document.getElementById('modal-pago').classList.add('open');}
-function savePago(){const concepto=document.getElementById('mp-concepto').value.trim();const importe=parseFloat(document.getElementById('mp-importe').value);if(!concepto||!importe){alert('Rellena concepto e importe');return;}const rawFecha=document.getElementById('mp-fecha').value;let fecha='—';if(rawFecha){const d=new Date(rawFecha);fecha=d.toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit',year:'numeric'});}const pago={id:editPagoId||nextPagoId++,fecha,concepto,proveedor:document.getElementById('mp-proveedor').value||'—',responsable:document.getElementById('mp-resp').value,metodo:document.getElementById('mp-metodo').value,importe,categoria:document.getElementById('mp-cat').value};if(editPagoId){const idx=pagosItems.findIndex(i=>i.id===editPagoId);pagosItems[idx]=pago;}else pagosItems.push(pago);closeModal('pago');saveData();renderPagos();updateKPIs();buildCharts();}
-function deletePago(id){if(!confirm('¿Eliminar?'))return;pagosItems=pagosItems.filter(i=>i.id!==id);saveData();renderPagos();updateKPIs();buildCharts();}
 function openTarea(){
   editTareaId=null;
   document.getElementById('mt-modal-title').textContent='Nueva tarea';
@@ -629,8 +889,7 @@ function openTarea(){
   document.getElementById('modal-tarea').classList.add('open');
 }
 function editTareaItem(id){
-  const t=tareasItems.find(i=>i.id===id);
-  if(!t)return;
+  const t=tareasItems.find(i=>i.id===id);if(!t)return;
   editTareaId=id;
   document.getElementById('mt-modal-title').textContent='Editar tarea';
   document.getElementById('mt-titulo').value=t.titulo;
@@ -644,116 +903,40 @@ function editTareaItem(id){
 function saveTarea(){
   const titulo=document.getElementById('mt-titulo').value.trim();
   if(!titulo){alert('Escribe el título');return;}
-  const tarea={
-    id:editTareaId||nextTareaId++,
-    titulo,
-    desc:document.getElementById('mt-desc').value||'',
-    prioridad:document.getElementById('mt-pri').value,
-    estado:document.getElementById('mt-estado').value,
-    responsable:document.getElementById('mt-resp').value,
-    fecha:document.getElementById('mt-fecha').value||'',
-  };
-  if(editTareaId){
-    const idx=tareasItems.findIndex(t=>t.id===editTareaId);
-    tareasItems[idx]=tarea;
-  } else {
-    tareasItems.push(tarea);
-  }
-  editTareaId=null;
-  closeModal('tarea');
-  saveData();
-  renderTareas();
+  const tarea={id:editTareaId||nextTareaId++,titulo,desc:document.getElementById('mt-desc').value||'',prioridad:document.getElementById('mt-pri').value,estado:document.getElementById('mt-estado').value,responsable:document.getElementById('mt-resp').value,fecha:document.getElementById('mt-fecha').value||''};
+  if(editTareaId){const idx=tareasItems.findIndex(t=>t.id===editTareaId);tareasItems[idx]=tarea;}
+  else tareasItems.push(tarea);
+  editTareaId=null;closeModal('tarea');saveData();renderTareas();
 }
 function deleteTarea(id){if(!confirm('¿Eliminar?'))return;tareasItems=tareasItems.filter(t=>t.id!==id);saveData();renderTareas();}
 
-// ══════════════════════════════════════
-// CLOUDINARY UPLOAD
-// ══════════════════════════════════════
-const CLOUD_NAME = 'dwdyqxmkk';
-const UPLOAD_PRESET = 'dopi_comprobantes';
-
-function triggerUpload(){
-  document.getElementById('mc-file-input').click();
-}
-
-async function handleUpload(input){
-  const file = input.files[0];
-  if(!file) return;
-  
-  // Show progress
-  document.getElementById('mc-upload-progress').style.display='block';
-  document.getElementById('mc-upload-preview').style.display='none';
-  document.getElementById('mc-upload-label').textContent='Subiendo...';
-  
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', UPLOAD_PRESET);
-  formData.append('folder', 'dopi');
-  
-  // Animate progress bar
-  let prog = 0;
-  const progBar = document.getElementById('mc-progress-bar');
-  const progInterval = setInterval(()=>{ prog=Math.min(prog+8,85); progBar.style.width=prog+'%'; }, 200);
-  
-  try {
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
-      method: 'POST',
-      body: formData
-    });
-    const data = await res.json();
-    clearInterval(progInterval);
-    
-    if(data.secure_url){
-      progBar.style.width='100%';
-      setTimeout(()=>{
-        document.getElementById('mc-upload-progress').style.display='none';
-        document.getElementById('mc-comprobante').value = data.secure_url;
-        const name = file.name.length>40 ? file.name.substring(0,37)+'...' : file.name;
-        document.getElementById('mc-upload-name').textContent = '✓ '+name;
-        const preview = document.getElementById('mc-upload-preview');
-        preview.style.display='flex';
-        document.getElementById('mc-upload-label').textContent='📎 Toca para cambiar archivo';
-        document.getElementById('mc-upload-area').style.borderColor='var(--verde)';
-      }, 400);
-    } else {
-      throw new Error(data.error?.message || 'Error al subir');
-    }
-  } catch(e) {
-    clearInterval(progInterval);
-    document.getElementById('mc-upload-progress').style.display='none';
-    document.getElementById('mc-upload-label').textContent='📎 Toca para subir foto, PDF o imagen';
-    // Fallback: show error but allow manual URL
-    alert('Error al subir: '+e.message+'\n\nAsegúrate de crear el upload preset "dopi_comprobantes" en tu cuenta Cloudinary (Settings → Upload → Add upload preset → Unsigned).');
-  }
-  input.value='';
-}
-
-function clearUpload(){
-  document.getElementById('mc-comprobante').value='';
-  document.getElementById('mc-upload-preview').style.display='none';
-  document.getElementById('mc-upload-label').textContent='📎 Toca para subir foto, PDF o imagen';
-  document.getElementById('mc-upload-area').style.borderColor='var(--border)';
-  document.getElementById('mc-upload-area').style.background='var(--bg)';
-}
-
-function resetUploadWidget(url){
-  // Called when editing an existing item
-  if(url){
-    document.getElementById('mc-comprobante').value=url;
-    const shortUrl = url.split('/').pop().split('?')[0];
-    const name = shortUrl.length>40 ? shortUrl.substring(0,37)+'...' : shortUrl;
-    document.getElementById('mc-upload-name').textContent='✓ '+name;
-    document.getElementById('mc-upload-preview').style.display='flex';
-    document.getElementById('mc-upload-label').textContent='📎 Toca para cambiar archivo';
-    document.getElementById('mc-upload-area').style.borderColor='var(--verde)';
-  } else {
-    clearUpload();
-  }
+// ══════════════════════════════════════════════
+// TABS & MODALS
+// ══════════════════════════════════════════════
+function switchTab(tab,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  if(tab==='pagos')renderPagos();
+  if(tab==='tareas')renderTareas();
 }
 function closeModal(type){document.getElementById('modal-'+type).classList.remove('open');}
 document.querySelectorAll('.modal-bg').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
 document.getElementById('today').textContent=new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
-updateKPIs();renderSummary();renderCapex();renderPagos();renderTareas();setTimeout(buildCharts,100);
+(async()=>{
+  const saved=await loadData();
+  if(saved){
+    if(saved.capex)capexItems=saved.capex;
+    if(saved.tareas)tareasItems=saved.tareas;
+  }
+  renderCapex();renderPagos();renderTareas();
+  setTimeout(buildCharts,100);
+})();
 </script>
 </body>
 </html>
