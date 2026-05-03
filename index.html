@@ -176,6 +176,22 @@ td.sm{font-size:11px;color:var(--muted)}
 .chart-wrap{position:relative;height:180px}
 /* PANEL */
 .panel{display:none}.panel.active{display:block}
+/* VISOR COMPROBANTE */
+.viewer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;padding:16px}
+.viewer-overlay.open{display:flex}
+.viewer-header{display:flex;align-items:center;justify-content:space-between;width:100%;max-width:900px;margin-bottom:12px}
+.viewer-title{color:#fff;font-size:14px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.viewer-actions{display:flex;gap:8px;flex-shrink:0}
+.viewer-btn{padding:7px 14px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:inline-flex;align-items:center;gap:5px}
+.viewer-btn.close{background:rgba(255,255,255,0.15);color:#fff}
+.viewer-btn.close:hover{background:rgba(255,255,255,0.25)}
+.viewer-btn.open{background:#fff;color:var(--text)}
+.viewer-btn.open:hover{background:#f0f0eb}
+.viewer-body{width:100%;max-width:900px;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;background:rgba(255,255,255,0.05)}
+.viewer-body img{max-width:100%;max-height:70vh;object-fit:contain;border-radius:8px}
+.viewer-body iframe{width:100%;height:70vh;border:none;border-radius:8px;background:#fff}
+.viewer-body .viewer-pdf-fallback{color:#fff;text-align:center;padding:32px}
+.viewer-pdf-fallback p{font-size:14px;margin-bottom:16px;color:rgba(255,255,255,0.7)}
 /* COMPROBANTE LINK */
 .comp-link{display:inline-flex;align-items:center;gap:4px;color:var(--azul);font-size:11px;font-weight:600;text-decoration:none;padding:3px 8px;background:var(--azul-soft);border-radius:6px}
 @media(max-width:640px){
@@ -298,11 +314,12 @@ td.sm{font-size:11px;color:var(--muted)}
   </select></div>
   <div class="f-grid">
     <div class="f-row"><label>Presupuesto (€)</label><input type="number" id="mc-presupuesto" placeholder="0" min="0" step="0.01"></div>
-    <div class="f-row"><label>Estado</label><select id="mc-estado">
-      <option value="PENDIENTE">Pendiente</option><option value="PAGADO">Pagado</option>
-      <option value="PARCIAL">Parcial</option><option value="EN CURSO">En curso</option><option value="DEPOSITADO">Depositado</option>
-    </select></div>
+    <div class="f-row"><label>Valor pagado (€)</label><input type="number" id="mc-pagado-directo" placeholder="0" min="0" step="0.01"><div style="font-size:11px;color:var(--muted);margin-top:4px">Edita el total pagado registrado</div></div>
   </div>
+  <div class="f-row"><label>Estado</label><select id="mc-estado">
+    <option value="PENDIENTE">Pendiente</option><option value="PAGADO">Pagado</option>
+    <option value="PARCIAL">Parcial</option><option value="EN CURSO">En curso</option><option value="DEPOSITADO">Depositado</option>
+  </select></div>
   <div class="f-row"><label>Nota / proveedor</label><input id="mc-nota" placeholder="Proveedor, referencia..."></div>
   <div class="f-row"><label>Comprobante del presupuesto (PDF, foto, imagen)</label>
     <div class="upload-area" id="mc-upload-area" onclick="document.getElementById('mc-file-input').click()">
@@ -325,7 +342,7 @@ td.sm{font-size:11px;color:var(--muted)}
 <!-- MODAL REGISTRAR PAGO -->
 <div class="modal-bg" id="modal-pago"><div class="modal">
   <div class="modal-title"><span>💳 Registrar pago</span></div>
-  <div class="modal-subtitle" id="mp-concepto-label"></div>
+  <div class="modal-subtitle" id="mp-concepto-label" style="color:var(--rosa);font-weight:600;font-size:13px"></div>
   <input type="hidden" id="mp-capex-id">
   <input type="hidden" id="mp-pago-id">
   <div class="f-grid">
@@ -371,6 +388,18 @@ td.sm{font-size:11px;color:var(--muted)}
   </div>
   <div class="modal-acts"><button class="btn-cancel" type="button" onclick="closeModal('tarea')">Cancelar</button><button class="btn-save" type="button" onclick="saveTarea()">Guardar</button></div>
 </div></div>
+
+<!-- VISOR COMPROBANTE -->
+<div class="viewer-overlay" id="viewer-overlay" onclick="closeViewer(event)">
+  <div class="viewer-header">
+    <span class="viewer-title" id="viewer-title"></span>
+    <div class="viewer-actions">
+      <a class="viewer-btn open" id="viewer-open-link" href="#" target="_blank">↗ Abrir en nueva pestaña</a>
+      <button class="viewer-btn close" onclick="closeViewer()">✕ Cerrar</button>
+    </div>
+  </div>
+  <div class="viewer-body" id="viewer-body"></div>
+</div>
 
 <script>
 // ══════════════════════════════════════════════
@@ -543,14 +572,21 @@ function progressBar(item){
 }
 
 function pagosChips(item){
-  if(!item.pagos.length)return'<span style="font-size:11px;color:var(--faint)">Sin pagos registrados</span>';
-  return item.pagos.map((p,i)=>`<div class="pago-chip">
-    <span class="pago-chip-fecha">${p.fecha}</span>
+  const addBtn=`<button onclick="openPago(${item.id})" class="btn-sm verde" style="margin-top:4px;font-size:11px">+ Añadir pago</button>`;
+  if(!item.pagos.length) return`<div style="display:flex;align-items:center;gap:10px">
+    <span style="font-size:11px;color:var(--faint)">Sin pagos registrados</span>
+    ${addBtn}
+  </div>`;
+  const chips=item.pagos.map((p,i)=>`<div class="pago-chip">
+    <span class="pago-chip-fecha" style="min-width:80px">${p.fecha==='—'?'Sin fecha':p.fecha}</span>
     <span class="pago-chip-importe">${fmt(p.importe)}</span>
-    <span class="pago-chip-metodo">${p.responsable} · ${p.metodo}</span>
-    ${p.comprobante?`<a href="${p.comprobante}" target="_blank" class="comp-link" style="padding:2px 6px;font-size:10px">${p.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'}</a>`:''}
+    <span class="pago-chip-metodo">${p.responsable!=='—'?p.responsable+' · ':''} ${p.metodo!=='—'?p.metodo:''}</span>
+    ${p.nota?`<span style="font-size:10px;color:var(--muted);font-style:italic">${p.nota}</span>`:''}
+    ${p.comprobante?`<button onclick="event.stopPropagation();openViewer('${p.comprobante}','${item.concepto} — Pago ${i+1}')" class="comp-link" style="padding:2px 6px;font-size:10px;cursor:pointer;border:none">${p.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'}</button>`:''}
+    <button class="btn-ic" onclick="editPagoInItem(${item.id},${i})" title="Editar pago" style="padding:2px 6px;font-size:10px">✏</button>
     <button class="pago-chip-del" onclick="deletePagoFromItem(${item.id},${i})" title="Eliminar pago">✕</button>
   </div>`).join('');
+  return chips+addBtn;
 }
 
 function renderCapex(){
@@ -568,11 +604,11 @@ function renderCapex(){
       <td>${statusSelect(item)}</td>
       <td class="sm" style="max-width:160px">${item.nota}</td>
       <td style="white-space:nowrap">
-        ${item.comprobante?`<a href="${item.comprobante}" target="_blank" class="comp-link">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:'<span style="color:var(--faint);font-size:11px">—</span>'}
+        ${item.comprobante?`<button onclick="openViewer('${item.comprobante}','${item.concepto}')" class="comp-link" style="cursor:pointer;border:none">${item.comprobante.match(/\.(jpg|jpeg|png,gif|webp)/i)?'🖼':'📄'} Ver</button>`:'<span style="color:var(--faint);font-size:11px">—</span>'}
       </td>
       <td>
         <div class="acts">
-          <button class="btn-ic pay" onclick="openPago(${item.id})" title="Registrar pago">💳</button>
+          <button class="btn-ic pay" onclick="openPago(${item.id})" title="Registrar nuevo pago" style="font-size:12px;padding:4px 9px">💳 Pago</button>
           <button class="btn-ic" onclick="openCapexEdit(${item.id})" title="Editar">✏</button>
           <button class="btn-ic del" onclick="deleteCapex(${item.id})" title="Eliminar">✕</button>
         </div>
@@ -589,7 +625,7 @@ function renderCapex(){
       <div class="item-card-top">
         <span class="item-card-name"><span class="dot" style="background:${color};margin-right:7px"></span>${item.concepto}</span>
         <div class="acts">
-          <button class="btn-ic pay" onclick="openPago(${item.id})">💳</button>
+          <button class="btn-ic pay" onclick="openPago(${item.id})" style="font-size:11px;padding:4px 9px">💳 Pago</button>
           <button class="btn-ic" onclick="openCapexEdit(${item.id})">✏</button>
           <button class="btn-ic del" onclick="deleteCapex(${item.id})">✕</button>
         </div>
@@ -603,7 +639,7 @@ function renderCapex(){
       <div class="item-card-bottom">
         ${statusSelect(item)}
         <span style="font-size:11px;color:var(--muted);flex:1">${item.nota}</span>
-        ${item.comprobante?`<a href="${item.comprobante}" target="_blank" class="comp-link" style="flex-shrink:0">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:''}
+        ${item.comprobante?`<button onclick="openViewer('${item.comprobante}','${item.concepto}')" class="comp-link" style="flex-shrink:0;cursor:pointer;border:none">${item.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</button>`:''}
       </div>
       <div class="pagos-list" style="margin-top:8px">${pagosChips(item)}</div>
     </div>`).join('');
@@ -652,7 +688,7 @@ function renderPagos(){
     <td class="sm">${p.responsable}</td>
     <td class="sm">${p.metodo}</td>
     <td class="r bold" style="color:${p.esCapital?'#7c3aed':'var(--text)'}">${fmt(p.importe)}</td>
-    <td>${p.comprobante?`<a href="${p.comprobante}" target="_blank" class="comp-link">${p.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</a>`:'<span style="color:var(--faint);font-size:11px">—</span>'}</td>
+    <td>${p.comprobante?`<button onclick="openViewer('${p.comprobante}','${p.concepto}')" class="comp-link" style="cursor:pointer;border:none">${p.comprobante.match(/\.(jpg|jpeg|png|gif|webp)/i)?'🖼':'📄'} Ver</button>`:'<span style="color:var(--faint);font-size:11px">—</span>'}</td>
   </tr>`).join('')+`<tr class="tot-row">
     <td colspan="5">TOTAL excl. capital social</td>
     <td class="r" style="color:#16a34a">${fmt(totalReal)}</td><td></td>
@@ -668,6 +704,7 @@ function openCapex(){
   document.getElementById('mc-subtitle').textContent='';
   ['mc-concepto','mc-nota'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('mc-presupuesto').value='';
+  document.getElementById('mc-pagado-directo').value='';
   document.getElementById('mc-cat').selectedIndex=0;
   document.getElementById('mc-estado').selectedIndex=0;
   clearUpload('mc');
@@ -681,6 +718,9 @@ function openCapexEdit(id){
   document.getElementById('mc-concepto').value=item.concepto;
   document.getElementById('mc-cat').value=item.cat;
   document.getElementById('mc-presupuesto').value=item.presupuesto||'';
+  // Show current total pagado so user can edit it
+  const currentPagado=totalPagado(item);
+  document.getElementById('mc-pagado-directo').value=currentPagado>0?currentPagado:'';
   document.getElementById('mc-estado').value=item.estado;
   document.getElementById('mc-nota').value=item.nota||'';
   const url=item.comprobante||'';
@@ -699,6 +739,32 @@ function openCapexEdit(id){
 function saveCapex(){
   const concepto=document.getElementById('mc-concepto').value.trim();
   if(!concepto){alert('Escribe el concepto');return;}
+  const existingItem=editCapexId?capexItems.find(i=>i.id===editCapexId):null;
+  let pagos=existingItem?[...existingItem.pagos]:[];
+
+  // Handle pagado-directo override
+  const pagadoDirectoRaw=document.getElementById('mc-pagado-directo').value;
+  if(pagadoDirectoRaw!==''){
+    const pagadoDirecto=parseFloat(pagadoDirectoRaw)||0;
+    const currentTotal=pagos.reduce((s,p)=>s+(p.importe||0),0);
+    if(Math.abs(pagadoDirecto-currentTotal)>0.01){
+      if(pagadoDirecto===0){
+        // Clear all pagos
+        pagos=[];
+      } else if(pagos.length===0){
+        // Add a single pago entry
+        pagos=[{id:nextPagoId++,fecha:'—',importe:pagadoDirecto,responsable:'—',metodo:'—',comprobante:'',nota:'Ajuste manual'}];
+      } else if(pagos.length===1){
+        // Update the single pago
+        pagos[0]={...pagos[0],importe:pagadoDirecto};
+      } else {
+        // Multiple pagos: add a correction entry
+        const diff=pagadoDirecto-currentTotal;
+        if(diff!==0) pagos.push({id:nextPagoId++,fecha:'—',importe:diff,responsable:'—',metodo:'Ajuste',comprobante:'',nota:'Corrección manual'});
+      }
+    }
+  }
+
   const item={
     id:editCapexId||nextCapexId++,
     cat:document.getElementById('mc-cat').value,
@@ -707,8 +773,9 @@ function saveCapex(){
     estado:document.getElementById('mc-estado').value,
     nota:document.getElementById('mc-nota').value||'',
     comprobante:document.getElementById('mc-comprobante').value||'',
-    pagos:editCapexId?(capexItems.find(i=>i.id===editCapexId)||{pagos:[]}).pagos:[],
+    pagos,
   };
+  autoEstado(item);
   if(editCapexId){const idx=capexItems.findIndex(i=>i.id===editCapexId);capexItems[idx]=item;}
   else capexItems.push(item);
   editCapexId=null;closeModal('capex');saveData();renderCapex();
@@ -724,19 +791,57 @@ function deleteCapex(id){
 // ══════════════════════════════════════════════
 function openPago(capexId){
   document.getElementById('mp-capex-id').value=capexId;
-  document.getElementById('mp-pago-id').value='';
+  document.getElementById('mp-pago-id').value=''; // clear = new pago
   const item=capexItems.find(i=>i.id===capexId);
-  document.getElementById('mp-concepto-label').textContent=item?item.concepto:'';
+  const nPagos=item?item.pagos.length:0;
+  document.getElementById('mp-concepto-label').textContent=item?(item.concepto+(nPagos>0?' — pago '+(nPagos+1)+' de este concepto':'')):'';
   ['mp-nota'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('mp-fecha').value='';
-  document.getElementById('mp-importe').value='';
+  document.getElementById('mp-importe').value=item&&item.presupuesto?'':''; // prefill remainder?
   document.getElementById('mp-resp').selectedIndex=0;
   document.getElementById('mp-metodo').selectedIndex=0;
   clearUpload('mp');
   document.getElementById('modal-pago').classList.add('open');
 }
+function editPagoInItem(capexId, pagoIdx){
+  const item=capexItems.find(i=>i.id===capexId);
+  if(!item)return;
+  const p=item.pagos[pagoIdx];
+  if(!p)return;
+  document.getElementById('mp-capex-id').value=capexId;
+  document.getElementById('mp-pago-id').value=pagoIdx; // store index
+  document.getElementById('mp-concepto-label').textContent=item.concepto+' — editando pago '+(pagoIdx+1);
+  // Convert stored fecha back to date input format
+  if(p.fecha&&p.fecha!=='—'&&p.fecha!=='Sin fecha'){
+    // Parse dd/mm/yyyy to yyyy-mm-dd
+    const parts=p.fecha.split('/');
+    if(parts.length===3) document.getElementById('mp-fecha').value=`${parts[2]}-${parts[1]}-${parts[0]}`;
+    else document.getElementById('mp-fecha').value='';
+  } else {
+    document.getElementById('mp-fecha').value='';
+  }
+  document.getElementById('mp-importe').value=p.importe||'';
+  document.getElementById('mp-resp').value=p.responsable!=='—'?p.responsable:'Pablo';
+  document.getElementById('mp-metodo').value=p.metodo!=='—'?p.metodo:'Transferencia';
+  document.getElementById('mp-nota').value=p.nota||'';
+  if(p.comprobante){
+    document.getElementById('mp-comprobante').value=p.comprobante;
+    const short=p.comprobante.split('/').pop().split('?')[0];
+    document.getElementById('mp-upload-name').textContent='✓ '+(short.length>40?short.substring(0,37)+'...':short);
+    document.getElementById('mp-upload-preview').style.display='flex';
+    document.getElementById('mp-upload-label').textContent='📎 Toca para cambiar';
+    document.getElementById('mp-upload-area').style.borderColor='var(--verde)';
+  } else {
+    clearUpload('mp');
+  }
+  document.getElementById('modal-pago').classList.add('open');
+}
+
 function savePago(){
   const capexId=parseInt(document.getElementById('mp-capex-id').value);
+  const pagoIdxRaw=document.getElementById('mp-pago-id').value;
+  const isEdit=pagoIdxRaw!=='';
+  const pagoIdx=isEdit?parseInt(pagoIdxRaw):-1;
   const importe=parseFloat(document.getElementById('mp-importe').value);
   if(!importe){alert('Escribe el importe');return;}
   const rawFecha=document.getElementById('mp-fecha').value;
@@ -745,13 +850,18 @@ function savePago(){
   const item=capexItems.find(i=>i.id===capexId);
   if(!item)return;
   const pago={
-    id:nextPagoId++, fecha, importe,
+    id:isEdit?item.pagos[pagoIdx].id:nextPagoId++,
+    fecha, importe,
     responsable:document.getElementById('mp-resp').value,
     metodo:document.getElementById('mp-metodo').value,
     comprobante:document.getElementById('mp-comprobante').value||'',
     nota:document.getElementById('mp-nota').value||'',
   };
-  item.pagos.push(pago);
+  if(isEdit){
+    item.pagos[pagoIdx]=pago;
+  } else {
+    item.pagos.push(pago);
+  }
   autoEstado(item);
   closeModal('pago');saveData();renderCapex();renderPagos();
 }
@@ -921,6 +1031,54 @@ function switchTab(tab,btn){
   if(tab==='pagos')renderPagos();
   if(tab==='tareas')renderTareas();
 }
+
+// ══════════════════════════════════════════════
+// VISOR DE COMPROBANTES
+// ══════════════════════════════════════════════
+function openViewer(url, title) {
+  if (!url) return;
+  const overlay = document.getElementById('viewer-overlay');
+  const body = document.getElementById('viewer-body');
+  const titleEl = document.getElementById('viewer-title');
+  const openLink = document.getElementById('viewer-open-link');
+
+  titleEl.textContent = title || 'Comprobante';
+  openLink.href = url;
+
+  const isImage = url.match(/\.(jpg|jpeg|png|gif|webp)/i);
+  const isPDF = url.match(/\.pdf/i) || url.includes('/raw/upload/') || url.includes('cloudinary');
+
+  if (isImage) {
+    body.innerHTML = `<img src="${url}" alt="${title || 'Comprobante'}" loading="lazy">`;
+  } else {
+    // Para PDFs: intentar iframe primero, con fallback a Google Docs viewer
+    // Cloudinary puede servir PDFs directamente
+    const pdfUrl = url.includes('cloudinary.com') 
+      ? url.replace('/upload/', '/upload/fl_attachment/') // force download or use raw URL
+      : url;
+    // Use Google Docs viewer as universal PDF viewer (works on mobile too)
+    const googleViewer = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+    body.innerHTML = `
+      <div style="width:100%;height:70vh;display:flex;flex-direction:column;gap:12px">
+        <iframe src="${googleViewer}" style="width:100%;flex:1;border:none;border-radius:8px;background:#fff" 
+          onerror="this.parentElement.innerHTML='<div class=viewer-pdf-fallback><p>No se puede previsualizar aquí</p><a href=\'${url}\' target=\'_blank\' class=\'viewer-btn open\' style=\'display:inline-flex;text-decoration:none\'>↗ Abrir PDF</a></div>'">
+        </iframe>
+      </div>`;
+  }
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeViewer(e) {
+  if (e && e.target !== document.getElementById('viewer-overlay') && !e.target.closest('.viewer-btn.close')) return;
+  document.getElementById('viewer-overlay').classList.remove('open');
+  document.getElementById('viewer-body').innerHTML = '';
+  document.body.style.overflow = '';
+}
+
+// Close viewer with Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
+
 function closeModal(type){document.getElementById('modal-'+type).classList.remove('open');}
 document.querySelectorAll('.modal-bg').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
