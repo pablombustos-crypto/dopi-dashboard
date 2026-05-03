@@ -6,6 +6,7 @@
 <title>DOPI — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -446,7 +447,8 @@ const UPLOAD_PRESET='dopi_comprobantes';
 const STORE_KEY='dopi-v3';
 const SUPABASE_URL='https://yxjdtwuopnnvuoiwpujr.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4amR0d3VvcG5udnVvaXdwdWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MzU5MzAsImV4cCI6MjA5MzQxMTkzMH0.o1m5K2P5jncCFfFJfDmqkUlR5zWRbZClb0BIzo-PCXc';
-const SB_HEADERS={'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
+// Initialize Supabase client using official SDK
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════════
 // DATA — capexItems ahora incluye array de pagos[]
@@ -507,43 +509,36 @@ let donutChart,barChart,lineChart;
 // STORAGE
 // ══════════════════════════════════════════════
 async function loadData(){
-  // Try Supabase first
+  // Try Supabase via official SDK
   try{
-    const res=await fetch(SUPABASE_URL+'/rest/v1/dopi_data?id=eq.main&select=capex,tareas',{headers:SB_HEADERS});
-    if(res.ok){
-      const rows=await res.json();
-      if(rows&&rows.length&&(rows[0].capex||rows[0].tareas)){
-        // Also update localStorage as cache
-        localStorage.setItem(STORE_KEY,JSON.stringify({capex:rows[0].capex||[],tareas:rows[0].tareas||[]}));
-        return {capex:rows[0].capex||[],tareas:rows[0].tareas||[]};
-      }
+    const {data,error}=await _sb.from('dopi_data').select('capex,tareas').eq('id','main').single();
+    if(!error&&data){
+      const result={capex:data.capex||[],tareas:data.tareas||[]};
+      // Cache locally
+      try{localStorage.setItem(STORE_KEY,JSON.stringify(result));}catch(e){}
+      return result;
     }
-  }catch(e){console.warn('Supabase load failed, using localStorage',e);}
-  // Fallback to localStorage
+    if(error) console.warn('Supabase load error:',error.message);
+  }catch(e){console.warn('Supabase load exception:',e);}
+  // Fallback to localStorage cache
   try{
     const raw=localStorage.getItem(STORE_KEY);
     return raw?JSON.parse(raw):null;
   }catch(e){return null;}
 }
 async function saveData(){
-  const payload={capex:capexItems,tareas:tareasItems};
-  // Always save to localStorage as cache/offline fallback
-  try{ localStorage.setItem(STORE_KEY,JSON.stringify(payload)); }catch(e){}
-  // Save to Supabase
+  // Always cache locally first
+  try{localStorage.setItem(STORE_KEY,JSON.stringify({capex:capexItems,tareas:tareasItems}));}catch(e){}
+  // Save to Supabase via official SDK
   try{
-    const res=await fetch(SUPABASE_URL+'/rest/v1/dopi_data?id=eq.main',{
-      method:'PATCH',
-      headers:{...SB_HEADERS,'Prefer':'return=minimal'},
-      body:JSON.stringify({capex:capexItems,tareas:tareasItems,updated_at:new Date().toISOString()})
-    });
-    if(res.ok||res.status===204){
-      showToast('☁️ Guardado en la nube');
-    } else {
-      throw new Error('HTTP '+res.status);
-    }
+    const {error}=await _sb.from('dopi_data')
+      .update({capex:capexItems,tareas:tareasItems,updated_at:new Date().toISOString()})
+      .eq('id','main');
+    if(error) throw new Error(error.message);
+    showToast('☁️ Guardado en la nube');
   }catch(e){
-    console.warn('Supabase save failed:',e);
-    showToast('⚠ Guardado solo local (sin conexión)','error');
+    console.warn('Supabase save failed:',e.message);
+    showToast('⚠ Guardado local (sin conexión)','error');
   }
 }
 
