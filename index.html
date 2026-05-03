@@ -176,6 +176,18 @@ td.sm{font-size:11px;color:var(--muted)}
 .chart-wrap{position:relative;height:180px}
 /* PANEL */
 .panel{display:none}.panel.active{display:block}
+/* BUSCADOR */
+.search-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.search-wrap{position:relative;flex:1}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--faint);pointer-events:none;width:15px;height:15px}
+.search-input{width:100%;background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px 9px 34px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none;transition:border-color .15s}
+.search-input:focus{border-color:var(--rosa);box-shadow:0 0 0 3px rgba(232,25,90,0.08)}
+.search-input::placeholder{color:var(--faint)}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--faint);cursor:pointer;font-size:16px;padding:2px;line-height:1;display:none}
+.search-clear.visible{display:block}
+.search-count{font-size:12px;color:var(--muted);white-space:nowrap;flex-shrink:0}
+.highlight{background:#fff3a8;border-radius:3px;padding:0 2px}
+.no-results{text-align:center;padding:40px 20px;color:var(--faint);font-size:14px}
 /* VISOR COMPROBANTE */
 .viewer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;padding:16px}
 .viewer-overlay.open{display:flex}
@@ -210,7 +222,13 @@ td.sm{font-size:11px;color:var(--muted)}
 <body>
 <div class="topbar">
   <div class="logo"><span class="logo-badge">DOPI</span><span class="logo-sub">Inversión & Tareas</span></div>
-  <span class="topbar-date mono" id="today"></span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="topbar-date mono" id="today"></span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span id="sync-status" style="font-size:11px;color:var(--faint)"></span>
+      <button onclick="exportData()" style="display:flex;align-items:center;gap:5px;background:var(--verde);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s" title="Guardar en nube y descargar copia">☁️ Guardar</button>
+    </div>
+  </div>
 </div>
 <div class="tabs">
   <button class="tab active" onclick="switchTab('resumen',this)">Resumen</button>
@@ -253,6 +271,14 @@ td.sm{font-size:11px;color:var(--muted)}
     <span class="sec-title">CAPEX — Presupuesto & pagos</span>
     <button class="btn-add" onclick="openCapex()">+ Añadir item</button>
   </div>
+  <div class="search-bar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-4-4"/></svg>
+      <input class="search-input" id="capex-search" placeholder="Buscar concepto, categoría, nota..." oninput="onCapexSearch(this.value)">
+      <button class="search-clear" id="capex-search-clear" onclick="clearCapexSearch()">×</button>
+    </div>
+    <span class="search-count" id="capex-search-count"></span>
+  </div>
   <div id="capex-tables"></div>
 </div>
 
@@ -260,7 +286,15 @@ td.sm{font-size:11px;color:var(--muted)}
 <div class="panel" id="panel-pagos">
   <div class="sec-hd">
     <span class="sec-title">Pagos reales</span>
-    <span style="font-size:12px;color:var(--muted)">Generado automáticamente desde CAPEX</span>
+    <span style="font-size:12px;color:var(--muted)">Generado desde CAPEX</span>
+  </div>
+  <div class="search-bar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-4-4"/></svg>
+      <input class="search-input" id="pagos-search" placeholder="Buscar concepto, responsable, método..." oninput="onPagosSearch(this.value)">
+      <button class="search-clear" id="pagos-search-clear" onclick="clearPagosSearch()">×</button>
+    </div>
+    <span class="search-count" id="pagos-search-count"></span>
   </div>
   <div class="tbl-wrap">
     <div class="cat-hd"><span class="cat-nm">Todos los pagos registrados</span><span class="cat-totals" id="pagos-label">—</span></div>
@@ -410,6 +444,9 @@ const CAT_COLOR={'COSTES LEGALES & LOCAL':'#e8195a','REFORMA & INTERIORISMO':'#f
 const CLOUD_NAME='dwdyqxmkk';
 const UPLOAD_PRESET='dopi_comprobantes';
 const STORE_KEY='dopi-v3';
+const SUPABASE_URL='https://yxjdtwuopnnvuoiwpujr.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl4amR0d3VvcG5udnVvaXdwdWpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc4MzU5MzAsImV4cCI6MjA5MzQxMTkzMH0.o1m5K2P5jncCFfFJfDmqkUlR5zWRbZClb0BIzo-PCXc';
+const SB_HEADERS={'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY};
 
 // ══════════════════════════════════════════════
 // DATA — capexItems ahora incluye array de pagos[]
@@ -462,14 +499,53 @@ let tareasItems=[
 ];
 
 let nextCapexId=50,nextPagoId=100,nextTareaId=30;
+let capexQuery='',pagosQuery='';
 let editCapexId=null,editTareaId=null,activeFilter='all';
 let donutChart,barChart,lineChart;
 
 // ══════════════════════════════════════════════
 // STORAGE
 // ══════════════════════════════════════════════
-async function loadData(){try{const r=await window.storage.get(STORE_KEY);if(r&&r.value)return JSON.parse(r.value);}catch(e){}return null;}
-async function saveData(){try{await window.storage.set(STORE_KEY,JSON.stringify({capex:capexItems,tareas:tareasItems}));}catch(e){}}
+async function loadData(){
+  // Try Supabase first
+  try{
+    const res=await fetch(SUPABASE_URL+'/rest/v1/dopi_data?id=eq.main&select=capex,tareas',{headers:SB_HEADERS});
+    if(res.ok){
+      const rows=await res.json();
+      if(rows&&rows.length&&(rows[0].capex||rows[0].tareas)){
+        // Also update localStorage as cache
+        localStorage.setItem(STORE_KEY,JSON.stringify({capex:rows[0].capex||[],tareas:rows[0].tareas||[]}));
+        return {capex:rows[0].capex||[],tareas:rows[0].tareas||[]};
+      }
+    }
+  }catch(e){console.warn('Supabase load failed, using localStorage',e);}
+  // Fallback to localStorage
+  try{
+    const raw=localStorage.getItem(STORE_KEY);
+    return raw?JSON.parse(raw):null;
+  }catch(e){return null;}
+}
+async function saveData(){
+  const payload={capex:capexItems,tareas:tareasItems};
+  // Always save to localStorage as cache/offline fallback
+  try{ localStorage.setItem(STORE_KEY,JSON.stringify(payload)); }catch(e){}
+  // Save to Supabase
+  try{
+    const res=await fetch(SUPABASE_URL+'/rest/v1/dopi_data?id=eq.main',{
+      method:'PATCH',
+      headers:{...SB_HEADERS,'Prefer':'return=minimal'},
+      body:JSON.stringify({capex:capexItems,tareas:tareasItems,updated_at:new Date().toISOString()})
+    });
+    if(res.ok||res.status===204){
+      showToast('☁️ Guardado en la nube');
+    } else {
+      throw new Error('HTTP '+res.status);
+    }
+  }catch(e){
+    console.warn('Supabase save failed:',e);
+    showToast('⚠ Guardado solo local (sin conexión)','error');
+  }
+}
 
 // ══════════════════════════════════════════════
 // UTILS
@@ -591,15 +667,19 @@ function pagosChips(item){
 
 function renderCapex(){
   const cont=document.getElementById('capex-tables');cont.innerHTML='';
+  let totalMatches=0;
   CATS.forEach(cat=>{
-    const items=capexItems.filter(i=>i.cat===cat);if(!items.length)return;
+    const allItems=capexItems.filter(i=>i.cat===cat);
+    const items=capexQuery?allItems.filter(i=>matchesQuery(i,capexQuery)):allItems;
+    if(!items.length)return;
+    totalMatches+=items.length;
     const catPres=items.reduce((s,i)=>s+(i.presupuesto||0),0);
     const catPag=items.reduce((s,i)=>s+totalPagado(i),0);
     const color=CAT_COLOR[cat];
 
     // Desktop rows
     const desktopRows=items.map(item=>`<tr>
-      <td class="bold"><span class="dot" style="background:${color};margin-right:7px"></span>${item.concepto}</td>
+      <td class="bold"><span class="dot" style="background:${color};margin-right:7px"></span>${hl(item.concepto,capexQuery)}</td>
       <td style="min-width:200px">${progressBar(item)}</td>
       <td>${statusSelect(item)}</td>
       <td class="sm" style="max-width:160px">${item.nota}</td>
@@ -623,7 +703,7 @@ function renderCapex(){
     // Mobile cards
     const mobileCards=items.map(item=>`<div class="item-card">
       <div class="item-card-top">
-        <span class="item-card-name"><span class="dot" style="background:${color};margin-right:7px"></span>${item.concepto}</span>
+        <span class="item-card-name"><span class="dot" style="background:${color};margin-right:7px"></span>${hl(item.concepto,capexQuery)}</span>
         <div class="acts">
           <button class="btn-ic pay" onclick="openPago(${item.id})" style="font-size:11px;padding:4px 9px">💳 Pago</button>
           <button class="btn-ic" onclick="openCapexEdit(${item.id})">✏</button>
@@ -656,6 +736,17 @@ function renderCapex(){
     </div>`;
   });
   updateKPIs();renderSummary();buildCharts();
+  const countEl=document.getElementById('capex-search-count');
+  if(countEl){
+    if(capexQuery){
+      countEl.textContent=totalMatches===0?'Sin resultados':totalMatches+' resultado'+(totalMatches===1?'':'s');
+      if(totalMatches===0&&!document.querySelector('#capex-tables .no-results')){
+        cont.innerHTML='<div class="no-results">🔍 No se encontraron items para "'+capexQuery+'"</div>';
+      }
+    } else {
+      countEl.textContent='';
+    }
+  }
 }
 
 function changeEstado(id,val){
@@ -677,13 +768,16 @@ function renderPagos(){
     });
   });
   allPagos.sort((a,b)=>{if(a.fecha==='—')return 1;if(b.fecha==='—')return -1;return b.fecha.localeCompare(a.fecha);});
+  const filteredPagos = pagosQuery
+    ? allPagos.filter(p=>[p.concepto,p.cat,p.responsable,p.metodo,p.fecha,p.nota].join(' ').toLowerCase().includes(pagosQuery))
+    : allPagos;
   const totalReal=allPagos.filter(p=>!p.esCapital).reduce((s,p)=>s+(p.importe||0),0);
   const totalTodo=allPagos.reduce((s,p)=>s+(p.importe||0),0);
   document.getElementById('pagos-label').textContent=`${fmt(totalReal)} gasto real · ${fmt(totalTodo)} total`;
   const c=(cat)=>({'COSTES LEGALES & LOCAL':'#e8195a','REFORMA & INTERIORISMO':'#f97316','EQUIPAMIENTO PRODUCTIVO':'#0369a1','BRANDING & MARKETING INICIAL':'#16a34a','CAPITAL OPERATIVO INICIAL':'#7c3aed'}[cat]||'#6b7280');
   tbody.innerHTML=allPagos.map(p=>`<tr>
     <td class="sm mono">${p.fecha}</td>
-    <td class="bold">${p.concepto}</td>
+    <td class="bold">${hl(p.concepto,pagosQuery)}</td>
     <td><span class="badge" style="background:${c(p.cat)}18;color:${c(p.cat)}">${p.cat.split(' ')[0]}</span></td>
     <td class="sm">${p.responsable}</td>
     <td class="sm">${p.metodo}</td>
@@ -903,6 +997,7 @@ async function handleUpload(input,prefix){
         prev.style.display='flex';
         document.getElementById(prefix+'-upload-label').textContent='📎 Toca para cambiar';
         document.getElementById(prefix+'-upload-area').style.borderColor='var(--verde)';
+        showToast('📎 Archivo subido correctamente');
       },400);
     }else throw new Error(data.error?.message||'Error');
   }catch(e){
@@ -1041,28 +1136,44 @@ function openViewer(url, title) {
   const body = document.getElementById('viewer-body');
   const titleEl = document.getElementById('viewer-title');
   const openLink = document.getElementById('viewer-open-link');
-
   titleEl.textContent = title || 'Comprobante';
   openLink.href = url;
 
-  const isImage = url.match(/\.(jpg|jpeg|png|gif|webp)/i);
-  const isPDF = url.match(/\.pdf/i) || url.includes('/raw/upload/') || url.includes('cloudinary');
+  // Detect type — Cloudinary images may not have extension in URL
+  const urlLower = url.toLowerCase();
+  const isCloudinaryImage = url.includes('cloudinary.com') && !urlLower.includes('.pdf') && !url.includes('/raw/');
+  const isImage = urlLower.match(/\.(jpg|jpeg|png|gif|webp)/) || isCloudinaryImage;
+  const isPDF = urlLower.includes('.pdf') || url.includes('/raw/upload/');
 
   if (isImage) {
-    body.innerHTML = `<img src="${url}" alt="${title || 'Comprobante'}" loading="lazy">`;
-  } else {
-    // Para PDFs: intentar iframe primero, con fallback a Google Docs viewer
-    // Cloudinary puede servir PDFs directamente
-    const pdfUrl = url.includes('cloudinary.com') 
-      ? url.replace('/upload/', '/upload/fl_attachment/') // force download or use raw URL
+    // For Cloudinary: transform to ensure image is served correctly
+    const imgUrl = url.includes('cloudinary.com')
+      ? url.replace('/upload/', '/upload/f_auto,q_auto/')
       : url;
-    // Use Google Docs viewer as universal PDF viewer (works on mobile too)
-    const googleViewer = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`;
+    body.innerHTML = `<img src="${imgUrl}" alt="${title||'Comprobante'}" loading="lazy" style="max-width:100%;max-height:72vh;object-fit:contain;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,0.3)">`;
+  } else if (isPDF) {
+    // For Cloudinary PDFs: use fl_inline to force browser rendering
+    const pdfViewUrl = url.includes('cloudinary.com')
+      ? url.replace('/upload/', '/upload/fl_inline/')
+      : url;
     body.innerHTML = `
-      <div style="width:100%;height:70vh;display:flex;flex-direction:column;gap:12px">
-        <iframe src="${googleViewer}" style="width:100%;flex:1;border:none;border-radius:8px;background:#fff" 
-          onerror="this.parentElement.innerHTML='<div class=viewer-pdf-fallback><p>No se puede previsualizar aquí</p><a href=\'${url}\' target=\'_blank\' class=\'viewer-btn open\' style=\'display:inline-flex;text-decoration:none\'>↗ Abrir PDF</a></div>'">
+      <div style="width:100%;height:72vh;display:flex;flex-direction:column;align-items:center;gap:12px">
+        <iframe src="${pdfViewUrl}" style="width:100%;flex:1;border:none;border-radius:8px;background:#fff"
+          onload="this.style.opacity=1" style="opacity:0;transition:opacity .3s">
         </iframe>
+        <a href="${url}" target="_blank" class="viewer-btn open" style="text-decoration:none;flex-shrink:0">↗ Abrir PDF en nueva pestaña</a>
+      </div>`;
+  } else {
+    // Unknown type — try as image first, fallback to link
+    body.innerHTML = `
+      <div style="width:100%;height:72vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
+        <img src="${url}" alt="${title||'Comprobante'}" loading="lazy"
+          style="max-width:100%;max-height:60vh;object-fit:contain;border-radius:8px"
+          onerror="this.style.display='none';document.getElementById('viewer-fallback').style.display='flex'">
+        <div id="viewer-fallback" style="display:none;flex-direction:column;align-items:center;gap:12px">
+          <p style="color:rgba(255,255,255,0.6);font-size:14px">No se puede previsualizar este archivo</p>
+          <a href="${url}" target="_blank" class="viewer-btn open" style="text-decoration:none">↗ Abrir archivo</a>
+        </div>
       </div>`;
   }
   overlay.classList.add('open');
@@ -1079,7 +1190,95 @@ function closeViewer(e) {
 // Close viewer with Escape key
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
 
+
+// ══════════════════════════════════════════════
+// BUSCADOR
+// ══════════════════════════════════════════════
+function hl(text, query) {
+  if (!query || !text) return text || '';
+  const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return String(text).replace(new RegExp('(' + escaped + ')', 'gi'), '<mark class="highlight">$1</mark>');
+}
+
+function onCapexSearch(val) {
+  capexQuery = val.trim().toLowerCase();
+  document.getElementById('capex-search-clear').classList.toggle('visible', capexQuery.length > 0);
+  renderCapex();
+}
+
+function clearCapexSearch() {
+  document.getElementById('capex-search').value = '';
+  capexQuery = '';
+  document.getElementById('capex-search-clear').classList.remove('visible');
+  document.getElementById('capex-search-count').textContent = '';
+  renderCapex();
+}
+
+function onPagosSearch(val) {
+  pagosQuery = val.trim().toLowerCase();
+  document.getElementById('pagos-search-clear').classList.toggle('visible', pagosQuery.length > 0);
+  renderPagos();
+}
+
+function clearPagosSearch() {
+  document.getElementById('pagos-search').value = '';
+  pagosQuery = '';
+  document.getElementById('pagos-search-clear').classList.remove('visible');
+  document.getElementById('pagos-search-count').textContent = '';
+  renderPagos();
+}
+
+function matchesQuery(item, q) {
+  if (!q) return true;
+  const fields = [item.concepto, item.cat, item.nota, item.estado,
+    ...(item.pagos||[]).map(p => [p.fecha, p.responsable, p.metodo, p.nota].join(' '))
+  ].join(' ').toLowerCase();
+  return fields.includes(q);
+}
+
 function closeModal(type){document.getElementById('modal-'+type).classList.remove('open');}
+
+// ══════════════════════════════════════════════
+// EXPORT / GUARDAR
+// ══════════════════════════════════════════════
+async function exportData(){
+  // 1. Save to cloud
+  await saveData();
+  // 2. Download JSON backup
+  const data={exportDate:new Date().toLocaleDateString('es-ES'),capex:capexItems,tareas:tareasItems};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='DOPI_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function showToast(msg, type='success') {
+  // Update sync status in topbar
+  const syncEl=document.getElementById('sync-status');
+  if(syncEl){
+    if(type==='error') syncEl.textContent='⚠ Sin conexión';
+    else syncEl.textContent='☁️ '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  }
+  let toast = document.getElementById('toast-msg');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-msg';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a18;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;font-family:Plus Jakarta Sans,sans-serif;z-index:400;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.25)';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.background = type==='error'?'#b91c1c':'#1a1a18';
+  requestAnimationFrame(()=>{
+    toast.style.transform='translateX(-50%) translateY(0)';
+    toast.style.opacity='1';
+    setTimeout(()=>{
+      toast.style.transform='translateX(-50%) translateY(80px)';
+      toast.style.opacity='0';
+    }, 2800);
+  });
+}
 document.querySelectorAll('.modal-bg').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
 // ══════════════════════════════════════════════
@@ -1087,10 +1286,12 @@ document.querySelectorAll('.modal-bg').forEach(o=>o.addEventListener('click',e=>
 // ══════════════════════════════════════════════
 document.getElementById('today').textContent=new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
 (async()=>{
+  // Show loading state
+  document.getElementById('capex-tables').innerHTML='<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px">☁️ Cargando datos...</div>';
   const saved=await loadData();
   if(saved){
-    if(saved.capex)capexItems=saved.capex;
-    if(saved.tareas)tareasItems=saved.tareas;
+    if(saved.capex&&saved.capex.length)capexItems=saved.capex;
+    if(saved.tareas&&saved.tareas.length)tareasItems=saved.tareas;
   }
   renderCapex();renderPagos();renderTareas();
   setTimeout(buildCharts,100);
