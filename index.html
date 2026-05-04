@@ -227,7 +227,8 @@ td.sm{font-size:11px;color:var(--muted)}
     <span class="topbar-date mono" id="today"></span>
     <div style="display:flex;align-items:center;gap:8px">
       <span id="sync-status" style="font-size:11px;color:var(--faint)"></span>
-      <button onclick="exportData()" style="display:flex;align-items:center;gap:5px;background:var(--verde);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s" title="Guardar en nube y descargar copia">☁️ Guardar</button>
+      <button onclick="downloadBackup()" style="display:flex;align-items:center;gap:5px;background:none;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif" title="Descargar copia de seguridad JSON">📥</button>
+      <button onclick="exportData()" style="display:flex;align-items:center;gap:5px;background:var(--verde);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif" title="Guardar en la nube">☁️ Guardar</button>
     </div>
   </div>
 </div>
@@ -429,7 +430,7 @@ td.sm{font-size:11px;color:var(--muted)}
   <div class="viewer-header">
     <span class="viewer-title" id="viewer-title"></span>
     <div class="viewer-actions">
-      <a class="viewer-btn open" id="viewer-open-link" href="#" target="_blank">↗ Abrir en nueva pestaña</a>
+      <a class="viewer-btn open" id="viewer-open-link" href="#" target="_blank" rel="noopener noreferrer">↗ Abrir en nueva pestaña</a>
       <button class="viewer-btn close" onclick="closeViewer()">✕ Cerrar</button>
     </div>
   </div>
@@ -442,7 +443,7 @@ td.sm{font-size:11px;color:var(--muted)}
 // ══════════════════════════════════════════════
 const CATS=['COSTES LEGALES & LOCAL','REFORMA & INTERIORISMO','EQUIPAMIENTO PRODUCTIVO','BRANDING & MARKETING INICIAL','CAPITAL OPERATIVO INICIAL'];
 const CAT_COLOR={'COSTES LEGALES & LOCAL':'#e8195a','REFORMA & INTERIORISMO':'#f97316','EQUIPAMIENTO PRODUCTIVO':'#0369a1','BRANDING & MARKETING INICIAL':'#16a34a','CAPITAL OPERATIVO INICIAL':'#7c3aed'};
-const CLOUD_NAME='dwdyqxmkk';
+const CLOUD_NAME='ddhul6ziw';
 const UPLOAD_PRESET='dopi_comprobantes';
 const STORE_KEY='dopi-v3';
 const SUPABASE_URL='https://yxjdtwuopnnvuoiwpujr.supabase.co';
@@ -975,16 +976,21 @@ async function handleUpload(input,prefix){
   formData.append('file',file);
   formData.append('upload_preset',UPLOAD_PRESET);
   formData.append('folder','dopi');
+  const isPDFUpload = file.type==='application/pdf';
+  // Use 'auto' resource type — Cloudinary handles both images and PDFs
+  const resourceType = 'auto';
   let prog=0;
   const bar=document.getElementById(prefix+'-progress-bar');
   const iv=setInterval(()=>{prog=Math.min(prog+8,85);bar.style.width=prog+'%';},200);
   try{
-    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`,{method:'POST',body:formData});
+    const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${resourceType}/upload`,{method:'POST',body:formData});
     const data=await res.json();clearInterval(iv);
     if(data.secure_url){
       bar.style.width='100%';
       setTimeout(()=>{
         document.getElementById(prefix+'-upload-progress').style.display='none';
+        // For PDFs uploaded via 'auto', Cloudinary may return image-type URL
+        // Store the secure_url as-is — the viewer handles detection
         document.getElementById(prefix+'-comprobante').value=data.secure_url;
         const name=file.name.length>40?file.name.substring(0,37)+'...':file.name;
         document.getElementById(prefix+'-upload-name').textContent='✓ '+name;
@@ -1129,50 +1135,68 @@ function openViewer(url, title) {
   if (!url) return;
   const overlay = document.getElementById('viewer-overlay');
   const body = document.getElementById('viewer-body');
-  const titleEl = document.getElementById('viewer-title');
-  const openLink = document.getElementById('viewer-open-link');
-  titleEl.textContent = title || 'Comprobante';
-  openLink.href = url;
+  document.getElementById('viewer-title').textContent = title || 'Comprobante';
+  document.getElementById('viewer-open-link').href = url;
 
-  // Detect type — Cloudinary images may not have extension in URL
   const urlLower = url.toLowerCase();
-  const isCloudinaryImage = url.includes('cloudinary.com') && !urlLower.includes('.pdf') && !url.includes('/raw/');
-  const isImage = urlLower.match(/\.(jpg|jpeg|png|gif|webp)/) || isCloudinaryImage;
-  const isPDF = urlLower.includes('.pdf') || url.includes('/raw/upload/');
+  const isCloudinary = url.includes('cloudinary.com');
+  
+  // Detect if PDF — Cloudinary raw uploads or .pdf extension
+  const isPDF = urlLower.includes('.pdf') || url.includes('/raw/upload/') || url.includes('f_pdf') || url.includes('application%2Fpdf');
+  // Everything else from Cloudinary is an image
+  const isImage = !isPDF && (isCloudinary || urlLower.match(/\.(jpg|jpeg|png|gif|webp|heic)/));
+
+  body.innerHTML = '';
 
   if (isImage) {
-    // For Cloudinary: transform to ensure image is served correctly
-    const imgUrl = url.includes('cloudinary.com')
-      ? url.replace('/upload/', '/upload/f_auto,q_auto/')
-      : url;
-    body.innerHTML = `<img src="${imgUrl}" alt="${title||'Comprobante'}" loading="lazy" style="max-width:100%;max-height:72vh;object-fit:contain;border-radius:8px;box-shadow:0 4px 24px rgba(0,0,0,0.3)">`;
+    // Cloudinary: force jpg delivery for HEIC/other formats + auto quality
+    let imgUrl = url;
+    if (isCloudinary) {
+      imgUrl = url.includes('/upload/')
+        ? url.replace('/upload/', '/upload/f_jpg,q_auto,w_1200/')
+        : url;
+    }
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.alt = title || 'Comprobante';
+    img.style.cssText = 'max-width:100%;max-height:75vh;object-fit:contain;border-radius:8px;box-shadow:0 4px 32px rgba(0,0,0,0.4)';
+    img.onerror = () => {
+      // Try original URL if transformation fails
+      if (imgUrl !== url) { img.src = url; return; }
+      body.innerHTML = fallbackHtml(url);
+    };
+    body.appendChild(img);
+
   } else if (isPDF) {
-    // For Cloudinary PDFs: use fl_inline to force browser rendering
-    const pdfViewUrl = url.includes('cloudinary.com')
-      ? url.replace('/upload/', '/upload/fl_inline/')
-      : url;
-    body.innerHTML = `
-      <div style="width:100%;height:72vh;display:flex;flex-direction:column;align-items:center;gap:12px">
-        <iframe src="${pdfViewUrl}" style="width:100%;flex:1;border:none;border-radius:8px;background:#fff"
-          onload="this.style.opacity=1" style="opacity:0;transition:opacity .3s">
-        </iframe>
-        <a href="${url}" target="_blank" class="viewer-btn open" style="text-decoration:none;flex-shrink:0">↗ Abrir PDF en nueva pestaña</a>
+    // Use Google Docs Viewer — universal PDF viewer that works on all browsers and mobile
+    const googleViewer = 'https://docs.google.com/viewer?embedded=true&url=' + encodeURIComponent(url);
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'width:100%;height:75vh;display:flex;flex-direction:column;gap:10px';
+    wrap.innerHTML = `
+      <iframe src="${googleViewer}"
+        style="width:100%;flex:1;border:none;border-radius:8px;background:#fff"
+        allow="autoplay">
+      </iframe>
+      <div style="display:flex;gap:8px;justify-content:center;flex-shrink:0">
+        <a href="${url}" target="_blank" rel="noopener" class="viewer-btn open" style="text-decoration:none">↗ Abrir PDF directo</a>
+        <a href="${googleViewer}" target="_blank" rel="noopener" class="viewer-btn open" style="text-decoration:none;background:#4285f4">↗ Abrir en Google Docs</a>
       </div>`;
+    body.appendChild(wrap);
+
   } else {
-    // Unknown type — try as image first, fallback to link
-    body.innerHTML = `
-      <div style="width:100%;height:72vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px">
-        <img src="${url}" alt="${title||'Comprobante'}" loading="lazy"
-          style="max-width:100%;max-height:60vh;object-fit:contain;border-radius:8px"
-          onerror="this.style.display='none';document.getElementById('viewer-fallback').style.display='flex'">
-        <div id="viewer-fallback" style="display:none;flex-direction:column;align-items:center;gap:12px">
-          <p style="color:rgba(255,255,255,0.6);font-size:14px">No se puede previsualizar este archivo</p>
-          <a href="${url}" target="_blank" class="viewer-btn open" style="text-decoration:none">↗ Abrir archivo</a>
-        </div>
-      </div>`;
+    body.innerHTML = fallbackHtml(url);
   }
+
   overlay.classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+
+function fallbackHtml(url) {
+  return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:rgba(255,255,255,0.7);padding:32px">
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+    <p style="font-size:14px;font-family:Plus Jakarta Sans,sans-serif;text-align:center">No se puede previsualizar<br><span style="font-size:12px;opacity:.6">Abre el archivo en una nueva pestaña</span></p>
+    <a href="${url}" target="_blank" class="viewer-btn open" style="text-decoration:none">↗ Abrir archivo</a>
+  </div>`;
 }
 
 function closeViewer(e) {
@@ -1237,16 +1261,22 @@ function closeModal(type){document.getElementById('modal-'+type).classList.remov
 // EXPORT / GUARDAR
 // ══════════════════════════════════════════════
 async function exportData(){
-  // 1. Save to cloud
+  // Only save to cloud — no download
   await saveData();
-  // 2. Download JSON backup
+}
+
+function downloadBackup(){
   const data={exportDate:new Date().toLocaleDateString('es-ES'),capex:capexItems,tareas:tareasItems};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const json=JSON.stringify(data,null,2);
+  // Use data URI — works in Chrome, Firefox and Safari without popup blockers
+  const uri='data:application/json;charset=utf-8,'+encodeURIComponent(json);
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
+  a.href=uri;
   a.download='DOPI_backup_'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(a.href);
+  document.body.removeChild(a);
+  showToast('📥 Backup descargado');
 }
 
 function showToast(msg, type='success') {
